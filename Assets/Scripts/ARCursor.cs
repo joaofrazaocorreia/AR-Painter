@@ -56,25 +56,29 @@ public class ARCursor : MonoBehaviour
 
     private void CheckForTouch()
     {
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        if (Input.touchCount > 0 || Input.anyKey)
         {
             colorImage.color = Color.green;
             touchPosText.text = Input.GetTouch(0).position.ToString();
-            errorText.text = $"spawned object at {transform.position}";
 
-            if (useCursor)
+            if (Input.GetTouch(0).phase == TouchPhase.Began)
             {
-                Instantiate(objectToPlace, transform.position, transform.rotation);
-            }
-
-            else
-            {
-                List<ARRaycastHit> hits = new List<ARRaycastHit>();
-                raycastManager.Raycast(Input.GetTouch(0).position, hits, UnityEngine.XR.ARSubsystems.TrackableType.Planes);
-
-                if (hits.Count > 0)
+                if (useCursor)
                 {
-                    Instantiate(objectToPlace, hits[0].pose.position, hits[0].pose.rotation);
+                    Instantiate(objectToPlace, transform.position, transform.rotation);
+                    errorText.text = $"spawned object at {transform.position}";
+                }
+
+                else
+                {
+                    List<ARRaycastHit> hits = new List<ARRaycastHit>();
+                    raycastManager.Raycast(Input.GetTouch(0).position, hits, UnityEngine.XR.ARSubsystems.TrackableType.Planes);
+
+                    if (hits.Count > 0)
+                    {
+                        Instantiate(objectToPlace, hits[0].pose.position, hits[0].pose.rotation);
+                        errorText.text = $"spawned object at {hits[0].pose.position}";
+                    }
                 }
             }
         }
