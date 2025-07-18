@@ -562,7 +562,9 @@ GameObject:
   - component: {fileID: 324294600}
   - component: {fileID: 324294599}
   - component: {fileID: 324294598}
+  - component: {fileID: 324294605}
   - component: {fileID: 324294603}
+  - component: {fileID: 324294604}
   m_Layer: 0
   m_Name: AR Origin
   m_TagString: Untagged
@@ -663,14 +665,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11de72e3c4d99834281713f98c3ef9ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  touchInputAction: 1
-  raycastHitCursor: {fileID: 254469670}
-  testSpawnPrefab: {fileID: 7670708087121801820, guid: f91ab26acdd1c634fb2072b15fb40cdc,
+  prefabToSpawn: {fileID: 7670708087121801820, guid: f91ab26acdd1c634fb2072b15fb40cdc,
     type: 3}
+  raycastHitCursor: {fileID: 254469670}
+--- !u!114 &324294604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 324294597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b61ba94b6e759de4e941eae2d9f0eebe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  updateViewRatePerSec: 6
+  colorFilterTreshold: 55
+  debug: 1
   currentColorText: {fileID: 2004165839}
   filteredColorText: {fileID: 555415450}
-  errorText: {fileID: 118473572}
   currentColorImage: {fileID: 834009393}
+--- !u!114 &324294605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 324294597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fffd36ae61373747865744225001805, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debug: 1
   touchDetectionImage: {fileID: 1026432731}
 --- !u!1 &555415448
 GameObject:
