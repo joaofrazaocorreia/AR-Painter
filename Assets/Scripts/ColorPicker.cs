@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Enums;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,11 +26,8 @@ public class ColorPicker : MonoBehaviour
     [SerializeField] private float colorFilterTreshold = 55f;
 
     private float updateViewTimer;
-    private Color currentColor;
-    public Color CurrentColor { get => currentColor; }
-    private FilteredColor filteredCurrentColor;
-    public FilteredColor FilteredCurrentColor { get => filteredCurrentColor; }
-    private Dictionary<(float, float, float), FilteredColor> filteredColors;
+    private FilteredColors filteredCurrentColor;
+    public FilteredColors FilteredCurrentColor { get => filteredCurrentColor; }
 
     [Header("Debug UI")]
     [SerializeField] private bool debug = false;
@@ -44,7 +40,6 @@ public class ColorPicker : MonoBehaviour
     {
         EnabledChecking = true;
         updateViewTimer = 0f;
-        SetupFilteredColors();
 
         currentColorText.gameObject.SetActive(debug);
         filteredColorText.gameObject.SetActive(debug);
@@ -87,7 +82,7 @@ public class ColorPicker : MonoBehaviour
         float blueAmount = 0f;
         int numOfPixels = 0;
 
-        // Adds up the colors of the middle pixel area with the given radius
+        // Adds up the colors of the middle pixels area with the given radius
         for (int i = (texture.width / 2) - pixelCheckingRadius; i <= (texture.width / 2) + pixelCheckingRadius; i++)
         {
             for (int j = (texture.height / 2) - pixelCheckingRadius; j <= (texture.height / 2) + pixelCheckingRadius; j++)
@@ -129,19 +124,19 @@ public class ColorPicker : MonoBehaviour
     /// </summary>
     /// <param name="color">The given color to filter.</param>
     /// <returns>The filtered color if applicable; None if the color didn't match any filter.</returns>
-    private FilteredColor FilterColor(Color color)
+    private FilteredColors FilterColor(Color color)
     {
-        foreach (KeyValuePair<(float, float, float), FilteredColor> kv in filteredColors)
+        foreach (KeyValuePair<FilteredColors, Color> kv in ColorManager.filteredColors)
         {
-            if (CheckColor(color.r, kv.Key.Item1)
-                && CheckColor(color.g, kv.Key.Item2)
-                    && CheckColor(color.b, kv.Key.Item3))
+            if (CheckColor(color.r, kv.Value.r)
+                && CheckColor(color.g, kv.Value.g)
+                    && CheckColor(color.b, kv.Value.b))
             {
-                return kv.Value;
+                return kv.Key;
             }
         }
 
-        return FilteredColor.None;
+        return FilteredColors.None;
     }
 
     /// <summary>
@@ -153,31 +148,5 @@ public class ColorPicker : MonoBehaviour
     private bool CheckColor(float colorValue, float checkValue)
     {
         return Mathf.Abs(checkValue - colorValue) <= colorFilterTreshold;
-    }
-
-    /// <summary>
-    /// Sets up the filtered colors dictionary values.
-    /// </summary>
-    private void SetupFilteredColors()
-    {
-        filteredColors = new Dictionary<(float, float, float), FilteredColor>
-        {
-            { (200f, 0f, 0f), FilteredColor.Red },
-            { (0f, 200f, 0f), FilteredColor.Green },
-            { (0f, 0f, 200f), FilteredColor.Blue },
-            { (200f, 200f, 0f), FilteredColor.Yellow },
-            { (200f, 0f, 200f), FilteredColor.Pink },
-            { (0f, 200f, 200f), FilteredColor.Cyan },
-            { (200f, 200f, 200f), FilteredColor.White },
-            { (0f, 0f, 0f), FilteredColor.Black },
-            { (100f, 100f, 100f), FilteredColor.Grey },
-            { (200f, 100f, 0f), FilteredColor.Orange },
-            { (0f, 200f, 100f), FilteredColor.LimeGreen },
-            { (100f, 0f, 200f), FilteredColor.Purple },
-            { (100f, 100f, 0f), FilteredColor.Brown },
-            { (100f, 0f, 0f), FilteredColor.DarkRed },
-            { (0f, 100f, 0f), FilteredColor.DarkGreen },
-            { (0f, 0f, 100f), FilteredColor.DarkBlue }
-        };
     }
 }
