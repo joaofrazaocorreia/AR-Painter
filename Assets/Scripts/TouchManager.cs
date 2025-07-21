@@ -8,14 +8,13 @@ public class TouchManager : MonoBehaviour
     [SerializeField] private bool debug = false;
     [SerializeField] private Image touchDetectionImage;
 
-    private ModelSpawner modelSpawner;
-    private ColorPicker colorPicker;
+    private GameManager gameManager;
     private bool touching;
+    public bool Touching { get => touching; }
 
     private void Start()
     {
-        modelSpawner = GetComponent<ModelSpawner>();
-        colorPicker = GetComponent<ColorPicker>();
+        gameManager = FindAnyObjectByType<GameManager>();
 
         touchDetectionImage.gameObject.SetActive(debug);
         touching = false;
@@ -45,15 +44,7 @@ public class TouchManager : MonoBehaviour
         touching = true;
         touchDetectionImage.color = Color.green;
 
-        if (modelSpawner.EnabledSpawning)
-        {
-            modelSpawner.SpawnObject();
-        }
-
-        else
-        {
-            //colorPicker.CollectColor();
-        }
+        gameManager.FingerDownAction();
     }
 
     private void FingerUp(EnhancedTouch.Finger finger)

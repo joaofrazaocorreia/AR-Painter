@@ -3,20 +3,11 @@ using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-public class ModelSpawner : MonoBehaviour
+public class PaintableSpawner : MonoBehaviour
 {
-    
     [Header("Main Variables")]
     private bool enabledSpawning;
-    public bool EnabledSpawning
-    {
-        get => enabledSpawning;
-
-        set
-        {
-            enabledSpawning = value;
-        }
-    }
+    public bool EnabledSpawning { get => enabledSpawning; set { enabledSpawning = value; } }
 
     [SerializeField] private GameObject prefabToSpawn;
     [SerializeField] private GameObject raycastHitCursor;
@@ -28,8 +19,8 @@ public class ModelSpawner : MonoBehaviour
 
     private void Start()
     {
-        raycastManager = GetComponent<ARRaycastManager>();
-        planeManager = GetComponent<ARPlaneManager>();
+        raycastManager = FindAnyObjectByType<ARRaycastManager>();
+        planeManager = FindAnyObjectByType<ARPlaneManager>();
         hits = new List<ARRaycastHit>();
     }
 
@@ -58,7 +49,8 @@ public class ModelSpawner : MonoBehaviour
                 Quaternion faceCameraRotation = Quaternion.Euler(direction);
 
                 Instantiate(prefabToSpawn, hits[0].pose.position, faceCameraRotation);
-                EnabledSpawning = false;
+
+                GetComponent<GameManager>().GameMode = GameManager.PlayerActionMode.ColorPicking;
             }
         }
     }
