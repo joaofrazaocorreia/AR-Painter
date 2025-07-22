@@ -7,22 +7,25 @@ public static class ColorLibrary
         new Dictionary<FilteredColors, (float, float, float)>
     {
             { FilteredColors.None,       (-100, -100f, -100f) },
-            { FilteredColors.Red,        (200f, 0f, 0f) },
-            { FilteredColors.Green,      (0f, 200f, 0f) },
-            { FilteredColors.Blue,       (0f, 0f, 200f) },
-            { FilteredColors.Yellow,     (200f, 200f, 0f) },
-            { FilteredColors.Pink,       (200f, 0f, 200f) },
-            { FilteredColors.Cyan,       (0f, 200f, 200f) },
-            { FilteredColors.White,      (200f, 200f, 200f) },
+            { FilteredColors.Red,        (210f, 0f, 0f) },
+            { FilteredColors.Green,      (0f, 210f, 0f) },
+            { FilteredColors.Blue,       (0f, 0f, 210f) },
+            { FilteredColors.Yellow,     (240f, 210f, 0f) },
+            { FilteredColors.Pink,       (240f, 0f, 210f) },
+            { FilteredColors.Cyan,       (0f, 210f, 240f) },
+            { FilteredColors.Teal,       (0f, 240f, 210f) },
+            { FilteredColors.Violet,     (150f, 0f, 210f) },
+            { FilteredColors.White,      (210f, 210f, 210f) },
             { FilteredColors.Black,      (0f, 0f, 0f) },
-            { FilteredColors.Grey,       (100f, 100f, 100f) },
-            { FilteredColors.Orange,     (200f, 100f, 0f) },
-            { FilteredColors.LimeGreen,  (100f, 200f, 0f) },
-            { FilteredColors.Purple,     (100f, 0f, 200f) },
-            { FilteredColors.Brown,      (100f, 100f, 0f) },
-            { FilteredColors.DarkRed,    (100f, 0f, 0f) },
-            { FilteredColors.DarkGreen,  (0f, 100f, 0f) },
-            { FilteredColors.DarkBlue,   (0f, 0f, 100f) }
+            { FilteredColors.LightGrey,  (120f, 120f, 120f) },
+            { FilteredColors.DarkGrey,   (60f, 60f, 60f) },
+            { FilteredColors.Orange,     (210f, 90f, 0f) },
+            { FilteredColors.LimeGreen,  (150f, 240f, 0f) },
+            { FilteredColors.Purple,     (90f, 0f, 90f) },
+            { FilteredColors.Brown,      (120f, 60f, 0f) },
+            { FilteredColors.DarkRed,    (90f, 0f, 0f) },
+            { FilteredColors.DarkGreen,  (0f, 90f, 0f) },
+            { FilteredColors.DarkBlue,   (0f, 0f, 90f) }
     };
 
     public static Color BinaryColor(float r, float g, float b)

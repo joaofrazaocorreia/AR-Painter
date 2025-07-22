@@ -888,7 +888,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updateViewRatePerSec: 6
-  colorFilterTreshold: 55
+  colorFilterTreshold: 30
   colorCollectingTime: 2
   colorCollectingBar: {fileID: 1288468160}
   colorCollectingFill: {fileID: 1291957896}
