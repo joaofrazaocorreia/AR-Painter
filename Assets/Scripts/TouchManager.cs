@@ -6,10 +6,6 @@ using EnhancedTouch = UnityEngine.InputSystem.EnhancedTouch;
 
 public class TouchManager : MonoBehaviour
 {
-    [Header("Debug UI")]
-    [SerializeField] private bool debug = false;
-    [SerializeField] private Image touchDetectionImage;
-
     private PlayerInput playerInput;
     private bool touching;
     public bool Touching { get => touching; }
@@ -19,16 +15,13 @@ public class TouchManager : MonoBehaviour
     private void Start()
     {
         playerInput = GetComponent<PlayerInput>();
-
-        touchDetectionImage.gameObject.SetActive(debug);
         touching = false;
-        touchDetectionImage.color = Color.red;
     }
 
 
     private void Update()
     {
-        TouchSimulation();
+        KeyboardTouchSimulation();
     }
 
     private void OnEnable()
@@ -52,8 +45,6 @@ public class TouchManager : MonoBehaviour
         if (finger.index != 0) return;
 
         touching = true;
-        touchDetectionImage.color = Color.green;
-
         OnFingerDown?.Invoke();
     }
 
@@ -62,26 +53,20 @@ public class TouchManager : MonoBehaviour
         if (finger.index != 0) return;
         
         touching = false;
-        touchDetectionImage.color = Color.red;
-
         OnFingerUp?.Invoke();
     }
 
-    private void TouchSimulation()
+    private void KeyboardTouchSimulation()
     {
         if (playerInput.actions["Interact"].WasPressedThisFrame())
         {
             touching = true;
-            touchDetectionImage.color = Color.green;
-
             OnFingerDown?.Invoke();
         }
 
         if (playerInput.actions["Interact"].WasReleasedThisFrame())
         {
             touching = false;
-            touchDetectionImage.color = Color.red;
-
             OnFingerUp?.Invoke();
         }
     }

@@ -25,8 +25,6 @@ public class ColorPicker : MonoBehaviour
     [SerializeField] private float updateViewRatePerSec = 6f;
     [SerializeField] private float colorFilterTreshold = 55f;
     [SerializeField] private float colorCollectingTime = 2f;
-    [SerializeField] private GameObject colorCollectingBar;
-    [SerializeField] private Image colorCollectingFill;
 
     private GameManager gameManager;
     private float updateViewTimer;
@@ -35,12 +33,6 @@ public class ColorPicker : MonoBehaviour
 
     [Header("Debug UI")]
     [SerializeField] private bool debug = false;
-    [SerializeField] private TextMeshProUGUI currentColorText;
-    [SerializeField] private TextMeshProUGUI filteredColorText;
-    [SerializeField] private Image currentColorImage;
-    [SerializeField] private TextMeshProUGUI currentColorGoalText;
-    [SerializeField] private Image currentColorGoalImage;
-    [SerializeField] private Image correctColorImage;
 
     // Runs at the start of the scene
     private void Start()
@@ -49,14 +41,6 @@ public class ColorPicker : MonoBehaviour
 
         EnabledChecking = true;
         updateViewTimer = 0f;
-
-        currentColorGoalText.gameObject.SetActive(false);
-        currentColorGoalImage.gameObject.SetActive(false);
-        colorCollectingBar.SetActive(false);
-        correctColorImage.gameObject.SetActive(false);
-        currentColorText.gameObject.SetActive(false);
-        filteredColorText.gameObject.SetActive(false);
-        currentColorImage.gameObject.SetActive(false);
     }
 
     // Runs after Update()s
@@ -80,13 +64,9 @@ public class ColorPicker : MonoBehaviour
 
         else
         {
-            currentColorGoalText.gameObject.SetActive(false);
-            currentColorGoalImage.gameObject.SetActive(false);
-            colorCollectingBar.SetActive(false);
-            correctColorImage.gameObject.SetActive(false);
-            currentColorText.gameObject.SetActive(false);
-            filteredColorText.gameObject.SetActive(false);
-            currentColorImage.gameObject.SetActive(false);
+            gameManager.UIManager.ToggleColorPickingUI(false);
+            gameManager.UIManager.ToggleColorPickingDebug(false);
+            //gameManager.UIManager.UpdateColorCollectingFill(false);
         }
     }
 
@@ -131,28 +111,15 @@ public class ColorPicker : MonoBehaviour
         // Updates the current filtered color
         filteredCurrentColor = FilterColor(averageColor);
 
-        if (debug)
-        {
-            currentColorText.gameObject.SetActive(debug);
-            filteredColorText.gameObject.SetActive(debug);
-            currentColorImage.gameObject.SetActive(debug);
+        // Updates the color picking UI
+        gameManager.UIManager.ToggleColorPickingUI(true);
+        gameManager.UIManager.UpdateColorGoalUI(gameManager.CurrentColorGoal,
+            filteredCurrentColor == gameManager.CurrentColorGoal);
 
-            // Displays the color on the debug UI
-            currentColorImage.color = new Color(redAmount, greenAmount, blueAmount);
-            currentColorText.text = $"({averageColor.r}, {averageColor.g}, {averageColor.b})";
-            filteredColorText.text = filteredCurrentColor.ToString();
-        }
-
-        currentColorGoalText.gameObject.SetActive(true);
-        currentColorGoalText.text = $"Looking for: {gameManager.CurrentColorGoal}";
-        currentColorGoalImage.gameObject.SetActive(true);
-        currentColorGoalImage.color = ColorLibrary.BinaryColor(ColorLibrary.filteredColors[gameManager.CurrentColorGoal]);
-
-        correctColorImage.gameObject.SetActive(true);
-        if (filteredCurrentColor == gameManager.CurrentColorGoal)
-            correctColorImage.color = Color.green;
-        else
-            correctColorImage.color = Color.red;
+        // Updates the debug UI
+        gameManager.UIManager.ToggleColorPickingDebug(debug);
+        gameManager.UIManager.UpdateColorPickingDebug(new Color(redAmount, greenAmount, blueAmount),
+            averageColor, filteredCurrentColor);
 
         // Destroys the stored screenshot to avoid lag
         Destroy(texture);
@@ -196,18 +163,16 @@ public class ColorPicker : MonoBehaviour
 
     private IEnumerator HoldToCollectColor()
     {
-        colorCollectingFill.fillAmount = 0;
-
         float collectingTimer = colorCollectingTime;
+
         while (EnabledChecking && gameManager.TouchManager.Touching &&
             FilteredCurrentColor == gameManager.CurrentColorGoal)
         {
-            colorCollectingBar.SetActive(true);
-
             if (collectingTimer > 0)
             {
                 collectingTimer -= Time.deltaTime;
-                colorCollectingFill.fillAmount = 1 - (collectingTimer / colorCollectingTime);
+                gameManager.UIManager.UpdateColorCollectingFill(true,
+                    1 - (collectingTimer / colorCollectingTime));
 
                 yield return null;
             }
@@ -221,6 +186,6 @@ public class ColorPicker : MonoBehaviour
             }
         }
 
-        colorCollectingBar.SetActive(false);  
+        gameManager.UIManager.UpdateColorCollectingFill(false);
     }
 }

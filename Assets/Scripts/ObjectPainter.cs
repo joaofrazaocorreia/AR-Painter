@@ -2,9 +2,6 @@ using UnityEngine;
 
 public class ObjectPainter : MonoBehaviour
 {
-    [Header("Main Variables")]
-    [SerializeField] private GameObject pressToPaintUI;
-
     private bool enabledPainting;
     public bool EnabledPainting { get => enabledPainting; set { enabledPainting = value; } }
     private Color currentColor;
@@ -26,13 +23,11 @@ public class ObjectPainter : MonoBehaviour
     {
         gameManager = GetComponent<GameManager>();
         CurrentColor = ColorLibrary.RGBColor(ColorLibrary.filteredColors[FilteredColors.None]);
-
-        pressToPaintUI.SetActive(false);
     }
 
     private void Update()
     {
-        pressToPaintUI.SetActive(IsFacingObject && EnabledPainting &&
+        gameManager.UIManager.TogglePaintingPrompt(IsFacingObject && EnabledPainting &&
             CurrentColor != ColorLibrary.RGBColor(ColorLibrary.filteredColors[FilteredColors.None]));
     }
 
@@ -42,8 +37,9 @@ public class ObjectPainter : MonoBehaviour
         {
             gameManager.CurrentPaintable.PaintParts(index, ColorLibrary.BinaryColor(
                 CurrentColor.r, CurrentColor.g, CurrentColor.b));
+                
             CurrentColor = ColorLibrary.RGBColor(ColorLibrary.filteredColors[FilteredColors.None]);
-            pressToPaintUI.SetActive(false);
+            gameManager.UIManager.TogglePaintingPrompt(false);
 
             gameManager.AdvanceActionMode();
         }

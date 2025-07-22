@@ -10,13 +10,13 @@ public class GameManager : MonoBehaviour
     [SerializeField][Min(0)] private float gameTime = 180f;
     [SerializeField][Min(1)] private int numOfColors = 6;
     [SerializeField][Min(0)] private float timePerColor = 30f;
-    [SerializeField] private TextMeshProUGUI timerText;
-    [SerializeField] private TextMeshProUGUI indexCycleTimerText;
 
     private PlayerActionMode playerActionMode;
     public int NumOfColors { get => numOfColors; }
     private TouchManager touchManager;
     public TouchManager TouchManager { get => touchManager; }
+    private UIManager uiManager;
+    public UIManager UIManager { get => uiManager; }
     private PaintableSpawner paintableSpawner;
     public PaintableSpawner PaintableSpawner { get => paintableSpawner; }
     private ColorPicker colorPicker;
@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         touchManager = FindAnyObjectByType<TouchManager>();
+        uiManager = FindAnyObjectByType<UIManager>();
         colorPicker = GetComponent<ColorPicker>();
         paintableSpawner = GetComponent<PaintableSpawner>();
         objectPainter = GetComponent<ObjectPainter>();
@@ -42,7 +43,6 @@ public class GameManager : MonoBehaviour
         currentColorIndex = 0;
         incompleteGoalIndexes = new List<int>();
         indexCycleTimer = timePerColor;
-        indexCycleTimerText.gameObject.SetActive(false);
 
         numOfColors = Mathf.Clamp(numOfColors, 1, ColorLibrary.filteredColors.Count() - 1);
 
@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
         UpdatePlayerAction();
 
         gameTimer = gameTime;
-        UpdateTimerText();
+        uiManager.UpdateGameTimerText(gameTimer);
     }
 
     private void Update()
@@ -84,15 +84,13 @@ public class GameManager : MonoBehaviour
 
     private void UpdateTimers()
     {
-        indexCycleTimerText.gameObject.SetActive(false);
-        
         if (gameTimer > 0)
         {
             if (playerActionMode != PlayerActionMode.PaintableSpawning &&
                 playerActionMode != PlayerActionMode.Finished)
             {
                 gameTimer = Mathf.Max(gameTimer - Time.deltaTime, 0f);
-                UpdateTimerText();
+                uiManager.UpdateGameTimerText(gameTimer);
             }
 
             if (playerActionMode == PlayerActionMode.ColorPicking)
@@ -105,26 +103,17 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     indexCycleTimer -= Time.deltaTime;
-                    indexCycleTimerText.text = $"Swapping in {Mathf.Ceil(indexCycleTimer)}...";
-                    indexCycleTimerText.gameObject.SetActive(incompleteGoalIndexes.Count > 1 && indexCycleTimer <= 10);
+                    uiManager.UpdateColorCycleTimer(incompleteGoalIndexes.Count > 1
+                        && indexCycleTimer <= 10, indexCycleTimer);
                 }
             }
         }
 
         else
         {
+            uiManager.UpdateColorCycleTimer(false);
             FinishGame(victory: false);
         }
-    }
-
-    private void UpdateTimerText()
-    {
-        int minutes = (int)Mathf.Floor(gameTimer / 60);
-        int seconds = (int)Mathf.Floor(gameTimer % 60);
-
-        timerText.text = $"{minutes}:";
-        if (seconds < 10) timerText.text += "0";
-        timerText.text += $"{seconds}";
     }
 
     public void FingerDownAction()
@@ -194,7 +183,7 @@ public class GameManager : MonoBehaviour
         else
         {
             int loop = 0;
-            while (loop < 100)
+            while (loop < numOfColors * 2)
             {
                 currentColorIndex++;
 

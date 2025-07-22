@@ -696,8 +696,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fffd36ae61373747865744225001805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debug: 1
-  touchDetectionImage: {fileID: 1026432731}
   OnFingerDown:
     m_PersistentCalls:
       m_Calls: []
@@ -890,15 +888,7 @@ MonoBehaviour:
   updateViewRatePerSec: 6
   colorFilterTreshold: 30
   colorCollectingTime: 2
-  colorCollectingBar: {fileID: 1288468160}
-  colorCollectingFill: {fileID: 1291957896}
   debug: 1
-  currentColorText: {fileID: 2004165839}
-  filteredColorText: {fileID: 555415450}
-  currentColorImage: {fileID: 834009393}
-  currentColorGoalText: {fileID: 1596939030}
-  currentColorGoalImage: {fileID: 1749747939}
-  correctColorImage: {fileID: 168981893}
 --- !u!114 &569199282
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -929,8 +919,6 @@ MonoBehaviour:
   gameTime: 180
   numOfColors: 6
   timePerColor: 30
-  timerText: {fileID: 118473572}
-  indexCycleTimerText: {fileID: 794352831}
 --- !u!114 &569199285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -943,7 +931,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d5f9501c08a75f4bbe5cb2ddb2200f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pressToPaintUI: {fileID: 1606952655}
 --- !u!1 &607778676
 GameObject:
   m_ObjectHideFlags: 0
@@ -1199,6 +1186,7 @@ GameObject:
   - component: {fileID: 857003191}
   - component: {fileID: 857003190}
   - component: {fileID: 857003189}
+  - component: {fileID: 857003193}
   m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
@@ -1281,19 +1269,19 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 118473571}
+  - {fileID: 794352830}
+  - {fileID: 1288468161}
   - {fileID: 2004165838}
   - {fileID: 555415449}
   - {fileID: 834009392}
-  - {fileID: 1026432730}
-  - {fileID: 1288468161}
-  - {fileID: 118473571}
   - {fileID: 1596939029}
   - {fileID: 1749747938}
-  - {fileID: 794352830}
-  - {fileID: 1606952656}
-  - {fileID: 1548583103}
   - {fileID: 168981892}
+  - {fileID: 1548583103}
+  - {fileID: 1606952656}
   - {fileID: 1587406108}
+  - {fileID: 1026432730}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1301,6 +1289,32 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &857003193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 857003188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35d9378be95f127468f98d4d5475eeed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timerText: {fileID: 118473572}
+  indexCycleTimerText: {fileID: 794352831}
+  colorCollectingBar: {fileID: 1288468160}
+  colorCollectingFill: {fileID: 1291957896}
+  currentColorText: {fileID: 2004165839}
+  filteredColorText: {fileID: 555415450}
+  currentColorImage: {fileID: 834009393}
+  currentColorGoalText: {fileID: 1596939030}
+  currentColorGoalImage: {fileID: 1026432731}
+  correctColorImage: {fileID: 168981893}
+  pressToPaintUI: {fileID: 1606952655}
+  errorText: {fileID: 1587406109}
+  winScreen: {fileID: 0}
+  lossScreen: {fileID: 0}
 --- !u!1 &1026432729
 GameObject:
   m_ObjectHideFlags: 0
@@ -1318,7 +1332,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1026432730
 RectTransform:
   m_ObjectHideFlags: 0
