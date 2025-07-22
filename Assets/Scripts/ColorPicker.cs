@@ -39,6 +39,7 @@ public class ColorPicker : MonoBehaviour
     [SerializeField] private TextMeshProUGUI filteredColorText;
     [SerializeField] private Image currentColorImage;
     [SerializeField] private TextMeshProUGUI currentColorGoalText;
+    [SerializeField] private Image currentColorGoalImage;
     [SerializeField] private Image correctColorImage;
 
     // Runs at the start of the scene
@@ -50,6 +51,7 @@ public class ColorPicker : MonoBehaviour
         updateViewTimer = 0f;
 
         currentColorGoalText.gameObject.SetActive(false);
+        currentColorGoalImage.gameObject.SetActive(false);
         colorCollectingBar.SetActive(false);
         correctColorImage.gameObject.SetActive(false);
         currentColorText.gameObject.SetActive(false);
@@ -79,6 +81,7 @@ public class ColorPicker : MonoBehaviour
         else
         {
             currentColorGoalText.gameObject.SetActive(false);
+            currentColorGoalImage.gameObject.SetActive(false);
             colorCollectingBar.SetActive(false);
             correctColorImage.gameObject.SetActive(false);
             currentColorText.gameObject.SetActive(false);
@@ -142,6 +145,8 @@ public class ColorPicker : MonoBehaviour
 
         currentColorGoalText.gameObject.SetActive(true);
         currentColorGoalText.text = $"Looking for: {gameManager.CurrentColorGoal}";
+        currentColorGoalImage.gameObject.SetActive(true);
+        currentColorGoalImage.color = ColorManager.filteredColors[gameManager.CurrentColorGoal];
 
         correctColorImage.gameObject.SetActive(true);
         if (filteredCurrentColor == gameManager.CurrentColorGoal)

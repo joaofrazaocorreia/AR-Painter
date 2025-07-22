@@ -7,9 +7,10 @@ public class GameManager : MonoBehaviour
 {
     public enum PlayerActionMode { PaintableSpawning, ColorPicking, ObjectPainting, Finished }
 
-    [SerializeField] [Min(1)] private int numOfColors = 6;
-    [SerializeField] [Min(0)] private float timePerColor = 30f;
+    [SerializeField][Min(1)] private int numOfColors = 6;
+    [SerializeField][Min(0)] private float timePerColor = 30f;
     [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private TextMeshProUGUI indexCycleTimerText;
 
     private PlayerActionMode playerActionMode;
     public int NumOfColors { get => numOfColors; }
@@ -22,9 +23,11 @@ public class GameManager : MonoBehaviour
     private ObjectPainter objectPainter;
     public ObjectPainter ObjectPainter { get => objectPainter; }
     private PaintableObject currentPaintable;
-    public PaintableObject CurrentPaintable { get => currentPaintable;  set { currentPaintable = value; } }
+    public PaintableObject CurrentPaintable { get => currentPaintable; set { currentPaintable = value; } }
     private float gameTimer;
     private int currentColorIndex;
+    private List<int> incompleteGoalIndexes;
+    private float indexCycleTimer;
     private List<FilteredColors> chosenColorGoals;
     public FilteredColors CurrentColorGoal { get => chosenColorGoals[currentColorIndex]; }
 
@@ -36,6 +39,9 @@ public class GameManager : MonoBehaviour
         objectPainter = GetComponent<ObjectPainter>();
         currentPaintable = null;
         currentColorIndex = 0;
+        incompleteGoalIndexes = new List<int>();
+        indexCycleTimer = timePerColor;
+        indexCycleTimerText.gameObject.SetActive(false);
 
         chosenColorGoals = new List<FilteredColors>();
         for (int i = 0; i < numOfColors; i++)
@@ -43,7 +49,7 @@ public class GameManager : MonoBehaviour
             int randomIndex = Random.Range(1, ColorManager.filteredColors.Count);
 
             chosenColorGoals.Add(ColorManager.filteredColors.Keys.ElementAt(randomIndex));
-            //chosenColorGoals.Add(FilteredColors.Black);
+            incompleteGoalIndexes.Add(i);
         }
 
         touchManager.OnFingerDown.AddListener(FingerDownAction);
@@ -58,7 +64,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         UpdatePlayerAction();
-        UpdateTimer();
+        UpdateTimers();
     }
 
 
@@ -69,7 +75,7 @@ public class GameManager : MonoBehaviour
         objectPainter.EnabledPainting = playerActionMode == PlayerActionMode.ObjectPainting;
     }
 
-    private void UpdateTimer()
+    private void UpdateTimers()
     {
         if (gameTimer > 0)
         {
@@ -79,11 +85,26 @@ public class GameManager : MonoBehaviour
                 gameTimer = Mathf.Max(gameTimer - Time.deltaTime, 0f);
                 UpdateTimerText();
             }
+
+            if (playerActionMode == PlayerActionMode.ColorPicking)
+            {
+                if (indexCycleTimer < 0)
+                {
+                    CycleColorIndex();
+                }
+
+                else
+                {
+                    indexCycleTimer -= Time.deltaTime;
+                    indexCycleTimerText.text = $"Swapping in {Mathf.Ceil(indexCycleTimer)}...";
+                    indexCycleTimerText.gameObject.SetActive(indexCycleTimer <= 10);
+                }
+            }
         }
 
         else
         {
-            GameOver();
+            FinishGame(victory:false);
         }
     }
 
@@ -133,16 +154,17 @@ public class GameManager : MonoBehaviour
 
             case PlayerActionMode.ObjectPainting:
                 {
-                    if (++currentColorIndex < numOfColors)
+                    incompleteGoalIndexes.Remove(currentColorIndex);
+
+                    if (incompleteGoalIndexes.Count > 0)
                     {
                         playerActionMode = PlayerActionMode.ColorPicking;
+                        CycleColorIndex();
                     }
 
                     else
                     {
-                        playerActionMode = PlayerActionMode.Finished;
-
-                        Victory();
+                        FinishGame(victory:true);
                     }
 
                     break;
@@ -155,13 +177,50 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Victory()
+    private void CycleColorIndex()
     {
+        Debug.Log($"Cycling color index (current: {currentColorIndex})");
 
+        if (incompleteGoalIndexes.Contains(currentColorIndex + 1))
+            currentColorIndex++;
+
+        else
+        {
+            int loop = 0;
+            while (loop < 100)
+            {
+                currentColorIndex++;
+
+                if (currentColorIndex >= numOfColors)
+                {
+                    currentColorIndex = 0;
+                }
+
+                Debug.Log(currentColorIndex);
+
+                if (incompleteGoalIndexes.Contains(currentColorIndex))
+                    break;
+
+                else loop++;
+            }
+        }
+
+        indexCycleTimer = timePerColor;
+        Debug.Log($"Cycled color index to {currentColorIndex}.");
     }
 
-    private void GameOver()
+    private void FinishGame(bool victory)
     {
+        playerActionMode = PlayerActionMode.Finished;
 
+        if (victory)
+        {
+
+        }
+
+        else
+        {
+
+        }
     }
 }
