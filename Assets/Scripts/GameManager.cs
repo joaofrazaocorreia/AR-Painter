@@ -1,32 +1,57 @@
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public enum PlayerActionMode { ModelSpawning, ColorPicking, Painting, Finished }
+    public enum PlayerActionMode { PaintableSpawning, ColorPicking, ObjectPainting, Finished }
 
-    [SerializeField] private float gameTime = 180f;
+    [SerializeField] [Min(1)] private int numOfColors = 6;
+    [SerializeField] [Min(0)] private float timePerColor = 30f;
     [SerializeField] private TextMeshProUGUI timerText;
 
     private PlayerActionMode playerActionMode;
-    public PlayerActionMode GameMode { get => playerActionMode; set { playerActionMode = value; } }
+    public int NumOfColors { get => numOfColors; }
+    private TouchManager touchManager;
+    public TouchManager TouchManager { get => touchManager; }
     private PaintableSpawner paintableSpawner;
+    public PaintableSpawner PaintableSpawner { get => paintableSpawner; }
     private ColorPicker colorPicker;
+    public ColorPicker ColorPicker { get => colorPicker; }
     private ObjectPainter objectPainter;
+    public ObjectPainter ObjectPainter { get => objectPainter; }
     private PaintableObject currentPaintable;
     public PaintableObject CurrentPaintable { get => currentPaintable;  set { currentPaintable = value; } }
     private float gameTimer;
+    private int currentColorIndex;
+    private List<FilteredColors> chosenColorGoals;
+    public FilteredColors CurrentColorGoal { get => chosenColorGoals[currentColorIndex]; }
 
     private void Start()
     {
+        touchManager = FindAnyObjectByType<TouchManager>();
         colorPicker = GetComponent<ColorPicker>();
         paintableSpawner = GetComponent<PaintableSpawner>();
         objectPainter = GetComponent<ObjectPainter>();
+        currentPaintable = null;
+        currentColorIndex = 0;
 
-        playerActionMode = PlayerActionMode.ModelSpawning;
+        chosenColorGoals = new List<FilteredColors>();
+        for (int i = 0; i < numOfColors; i++)
+        {
+            int randomIndex = Random.Range(1, ColorManager.filteredColors.Count);
+
+            chosenColorGoals.Add(ColorManager.filteredColors.Keys.ElementAt(randomIndex));
+            //chosenColorGoals.Add(FilteredColors.Black);
+        }
+
+        touchManager.OnFingerDown.AddListener(FingerDownAction);
+
+        playerActionMode = PlayerActionMode.PaintableSpawning;
         UpdatePlayerAction();
 
-        gameTimer = gameTime;
+        gameTimer = numOfColors * timePerColor;
         UpdateTimerText();
     }
 
@@ -39,16 +64,16 @@ public class GameManager : MonoBehaviour
 
     private void UpdatePlayerAction()
     {
-        paintableSpawner.EnabledSpawning = playerActionMode == PlayerActionMode.ModelSpawning;
+        paintableSpawner.EnabledSpawning = playerActionMode == PlayerActionMode.PaintableSpawning;
         colorPicker.EnabledChecking = playerActionMode == PlayerActionMode.ColorPicking;
-        objectPainter.EnabledPainting = playerActionMode == PlayerActionMode.Painting;
+        objectPainter.EnabledPainting = playerActionMode == PlayerActionMode.ObjectPainting;
     }
 
     private void UpdateTimer()
     {
         if (gameTimer > 0)
         {
-            if (playerActionMode != PlayerActionMode.ModelSpawning &&
+            if (playerActionMode != PlayerActionMode.PaintableSpawning &&
                 playerActionMode != PlayerActionMode.Finished)
             {
                 gameTimer = Mathf.Max(gameTimer - Time.deltaTime, 0f);
@@ -81,12 +106,52 @@ public class GameManager : MonoBehaviour
 
         else if (colorPicker.EnabledChecking)
         {
-            //colorPicker.StartCoroutine(CollectColor);
+            colorPicker.StartCollectingColor();
         }
 
         else if (objectPainter.EnabledPainting)
         {
-            //PaintObjectParts();
+            objectPainter.PaintObjectParts(currentColorIndex);
+        }
+    }
+
+    public void AdvanceActionMode()
+    {
+        switch (playerActionMode)
+        {
+            case PlayerActionMode.PaintableSpawning:
+                {
+                    playerActionMode = PlayerActionMode.ColorPicking;
+                    break;
+                }
+
+            case PlayerActionMode.ColorPicking:
+                {
+                    playerActionMode = PlayerActionMode.ObjectPainting;
+                    break;
+                }
+
+            case PlayerActionMode.ObjectPainting:
+                {
+                    if (++currentColorIndex < numOfColors)
+                    {
+                        playerActionMode = PlayerActionMode.ColorPicking;
+                    }
+
+                    else
+                    {
+                        playerActionMode = PlayerActionMode.Finished;
+
+                        Victory();
+                    }
+
+                    break;
+                }
+
+            default:
+                {
+                    break;
+                }
         }
     }
 

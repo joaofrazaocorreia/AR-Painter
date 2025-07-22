@@ -14,6 +14,7 @@ public class PaintableSpawner : MonoBehaviour
 
     private ARRaycastManager raycastManager;
     private ARPlaneManager planeManager;
+    private GameManager gameManager;
     private List<ARRaycastHit> hits;
     private Vector2 middleScreenPosition;
 
@@ -21,6 +22,8 @@ public class PaintableSpawner : MonoBehaviour
     {
         raycastManager = FindAnyObjectByType<ARRaycastManager>();
         planeManager = FindAnyObjectByType<ARPlaneManager>();
+        gameManager = GetComponent<GameManager>();
+
         hits = new List<ARRaycastHit>();
     }
 
@@ -48,9 +51,10 @@ public class PaintableSpawner : MonoBehaviour
 
                 Quaternion faceCameraRotation = Quaternion.Euler(direction);
 
-                Instantiate(prefabToSpawn, hits[0].pose.position, faceCameraRotation);
+                gameManager.CurrentPaintable = Instantiate(prefabToSpawn, hits[0].pose.position, faceCameraRotation).
+                    GetComponent<PaintableObject>();
 
-                GetComponent<GameManager>().GameMode = GameManager.PlayerActionMode.ColorPicking;
+                gameManager.AdvanceActionMode();
             }
         }
     }

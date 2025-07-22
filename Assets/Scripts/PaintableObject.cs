@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class PaintableObject : MonoBehaviour
 {
-    [SerializeField] private int numOfColors = 6;
-
+    private GameManager gameManager;
     private List<List<GameObject>> colorableParts;
 
     private void Start()
     {
+        gameManager = FindAnyObjectByType<GameManager>();
         AssignColorableParts();
     }
 
@@ -16,12 +16,12 @@ public class PaintableObject : MonoBehaviour
     {
         colorableParts = new List<List<GameObject>>();
 
-        int assignmentLoops = (int)Mathf.Ceil(transform.childCount / numOfColors);
+        int assignmentLoops = (int)Mathf.Ceil(transform.childCount / gameManager.NumOfColors);
         int childIndex = 0;
 
         for (int i = 0; i < assignmentLoops; i++)
         {
-            for (int j = 0; j < numOfColors && childIndex < transform.childCount; j++)
+            for (int j = 0; j < gameManager.NumOfColors && childIndex < transform.childCount; j++)
             {
                 while (colorableParts.Count <= j)
                     colorableParts.Add(new List<GameObject>());
@@ -29,14 +29,14 @@ public class PaintableObject : MonoBehaviour
                 Transform partToAdd = transform.GetChild(childIndex++);
 
                 if (partToAdd != null)
-                    colorableParts[i].Add(partToAdd.gameObject);
+                    colorableParts[j].Add(partToAdd.gameObject);
             }
         }
     }
 
     public void PaintParts(int partsIndex, Color color)
     {
-        partsIndex = Mathf.Clamp(partsIndex, 0, numOfColors-1);
+        partsIndex = Mathf.Clamp(partsIndex, 0, gameManager.NumOfColors-1);
 
         foreach (GameObject part in colorableParts[partsIndex])
         {

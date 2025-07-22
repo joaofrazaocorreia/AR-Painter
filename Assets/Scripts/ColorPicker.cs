@@ -24,7 +24,11 @@ public class ColorPicker : MonoBehaviour
 
     [SerializeField] private float updateViewRatePerSec = 6f;
     [SerializeField] private float colorFilterTreshold = 55f;
+    [SerializeField] private float colorCollectingTime = 2f;
+    [SerializeField] private GameObject colorCollectingBar;
+    [SerializeField] private Image colorCollectingFill;
 
+    private GameManager gameManager;
     private float updateViewTimer;
     private FilteredColors filteredCurrentColor;
     public FilteredColors FilteredCurrentColor { get => filteredCurrentColor; }
@@ -34,16 +38,23 @@ public class ColorPicker : MonoBehaviour
     [SerializeField] private TextMeshProUGUI currentColorText;
     [SerializeField] private TextMeshProUGUI filteredColorText;
     [SerializeField] private Image currentColorImage;
+    [SerializeField] private TextMeshProUGUI currentColorGoalText;
+    [SerializeField] private Image correctColorImage;
 
     // Runs at the start of the scene
     private void Start()
     {
+        gameManager = GetComponent<GameManager>();
+
         EnabledChecking = true;
         updateViewTimer = 0f;
 
-        currentColorText.gameObject.SetActive(debug);
-        filteredColorText.gameObject.SetActive(debug);
-        currentColorImage.gameObject.SetActive(debug);
+        currentColorGoalText.gameObject.SetActive(false);
+        colorCollectingBar.SetActive(false);
+        correctColorImage.gameObject.SetActive(false);
+        currentColorText.gameObject.SetActive(false);
+        filteredColorText.gameObject.SetActive(false);
+        currentColorImage.gameObject.SetActive(false);
     }
 
     // Runs after Update()s
@@ -63,6 +74,16 @@ public class ColorPicker : MonoBehaviour
             {
                 updateViewTimer -= Time.deltaTime;
             }
+        }
+
+        else
+        {
+            currentColorGoalText.gameObject.SetActive(false);
+            colorCollectingBar.SetActive(false);
+            correctColorImage.gameObject.SetActive(false);
+            currentColorText.gameObject.SetActive(false);
+            filteredColorText.gameObject.SetActive(false);
+            currentColorImage.gameObject.SetActive(false);
         }
     }
 
@@ -109,11 +130,24 @@ public class ColorPicker : MonoBehaviour
 
         if (debug)
         {
+            currentColorText.gameObject.SetActive(debug);
+            filteredColorText.gameObject.SetActive(debug);
+            currentColorImage.gameObject.SetActive(debug);
+
             // Displays the color on the debug UI
             currentColorImage.color = new Color(redAmount, greenAmount, blueAmount);
             currentColorText.text = $"({averageColor.r}, {averageColor.g}, {averageColor.b})";
             filteredColorText.text = filteredCurrentColor.ToString();
         }
+
+        currentColorGoalText.gameObject.SetActive(true);
+        currentColorGoalText.text = $"Looking for: {gameManager.CurrentColorGoal}";
+
+        correctColorImage.gameObject.SetActive(true);
+        if (filteredCurrentColor == gameManager.CurrentColorGoal)
+            correctColorImage.color = Color.green;
+        else
+            correctColorImage.color = Color.red;
 
         // Destroys the stored screenshot to avoid lag
         Destroy(texture);
@@ -148,5 +182,39 @@ public class ColorPicker : MonoBehaviour
     private bool CheckColor(float colorValue, float checkValue)
     {
         return Mathf.Abs(checkValue - colorValue) <= colorFilterTreshold;
+    }
+
+    public void StartCollectingColor()
+    {
+        StartCoroutine(HoldToCollectColor());
+    }
+
+    private IEnumerator HoldToCollectColor()
+    {
+        colorCollectingFill.fillAmount = 0;
+
+        float collectingTimer = colorCollectingTime;
+        while (EnabledChecking && gameManager.TouchManager.Touching &&
+            FilteredCurrentColor == gameManager.CurrentColorGoal)
+        {
+            colorCollectingBar.SetActive(true);
+
+            if (collectingTimer > 0)
+            {
+                collectingTimer -= Time.deltaTime;
+                colorCollectingFill.fillAmount = 1 - (collectingTimer / colorCollectingTime);
+
+                yield return null;
+            }
+
+            else
+            {
+                gameManager.ObjectPainter.CurrentColor = ColorManager.filteredColors[filteredCurrentColor];
+                gameManager.AdvanceActionMode();
+                break;
+            }
+        }
+
+        colorCollectingBar.SetActive(false);  
     }
 }

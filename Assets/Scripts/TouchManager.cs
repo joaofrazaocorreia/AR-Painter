@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using EnhancedTouch = UnityEngine.InputSystem.EnhancedTouch;
 
@@ -8,17 +10,25 @@ public class TouchManager : MonoBehaviour
     [SerializeField] private bool debug = false;
     [SerializeField] private Image touchDetectionImage;
 
-    private GameManager gameManager;
+    private PlayerInput playerInput;
     private bool touching;
     public bool Touching { get => touching; }
+    public UnityEvent OnFingerDown;
+    public UnityEvent OnFingerUp;
 
     private void Start()
     {
-        gameManager = FindAnyObjectByType<GameManager>();
+        playerInput = GetComponent<PlayerInput>();
 
         touchDetectionImage.gameObject.SetActive(debug);
         touching = false;
         touchDetectionImage.color = Color.red;
+    }
+
+
+    private void Update()
+    {
+        TouchSimulation();
     }
 
     private void OnEnable()
@@ -44,7 +54,7 @@ public class TouchManager : MonoBehaviour
         touching = true;
         touchDetectionImage.color = Color.green;
 
-        gameManager.FingerDownAction();
+        OnFingerDown?.Invoke();
     }
 
     private void FingerUp(EnhancedTouch.Finger finger)
@@ -53,5 +63,26 @@ public class TouchManager : MonoBehaviour
         
         touching = false;
         touchDetectionImage.color = Color.red;
+
+        OnFingerUp?.Invoke();
+    }
+
+    private void TouchSimulation()
+    {
+        if (playerInput.actions["Interact"].WasPressedThisFrame())
+        {
+            touching = true;
+            touchDetectionImage.color = Color.green;
+
+            OnFingerDown?.Invoke();
+        }
+
+        if (playerInput.actions["Interact"].WasReleasedThisFrame())
+        {
+            touching = false;
+            touchDetectionImage.color = Color.red;
+
+            OnFingerUp?.Invoke();
+        }
     }
 }

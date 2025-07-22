@@ -6,6 +6,7 @@ public static class ColorManager
     public static Dictionary<FilteredColors, Color> filteredColors =
         new Dictionary<FilteredColors, Color>
     {
+            { FilteredColors.None,       new Color(-100, -100f, -100f) },
             { FilteredColors.Red,        new Color(200f, 0f, 0f) },
             { FilteredColors.Green,      new Color(0f, 200f, 0f) },
             { FilteredColors.Blue,       new Color(0f, 0f, 200f) },
@@ -16,7 +17,7 @@ public static class ColorManager
             { FilteredColors.Black,      new Color(0f, 0f, 0f) },
             { FilteredColors.Grey,       new Color(100f, 100f, 100f) },
             { FilteredColors.Orange,     new Color(200f, 100f, 0f) },
-            { FilteredColors.LimeGreen,  new Color(0f, 200f, 100f) },
+            { FilteredColors.LimeGreen,  new Color(100f, 200f, 0f) },
             { FilteredColors.Purple,     new Color(100f, 0f, 200f) },
             { FilteredColors.Brown,      new Color(100f, 100f, 0f) },
             { FilteredColors.DarkRed,    new Color(100f, 0f, 0f) },
