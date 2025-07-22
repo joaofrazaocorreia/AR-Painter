@@ -44,6 +44,8 @@ public class GameManager : MonoBehaviour
         indexCycleTimer = timePerColor;
         indexCycleTimerText.gameObject.SetActive(false);
 
+        numOfColors = Mathf.Clamp(numOfColors, 1, ColorLibrary.filteredColors.Count() - 1);
+
         chosenColorGoals = new List<FilteredColors>();
         for (int i = 0; i < numOfColors; i++)
         {
