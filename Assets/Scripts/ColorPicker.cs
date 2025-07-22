@@ -146,7 +146,7 @@ public class ColorPicker : MonoBehaviour
         currentColorGoalText.gameObject.SetActive(true);
         currentColorGoalText.text = $"Looking for: {gameManager.CurrentColorGoal}";
         currentColorGoalImage.gameObject.SetActive(true);
-        currentColorGoalImage.color = ColorManager.filteredColors[gameManager.CurrentColorGoal];
+        currentColorGoalImage.color = ColorLibrary.BinaryColor(ColorLibrary.filteredColors[gameManager.CurrentColorGoal]);
 
         correctColorImage.gameObject.SetActive(true);
         if (filteredCurrentColor == gameManager.CurrentColorGoal)
@@ -165,11 +165,11 @@ public class ColorPicker : MonoBehaviour
     /// <returns>The filtered color if applicable; None if the color didn't match any filter.</returns>
     private FilteredColors FilterColor(Color color)
     {
-        foreach (KeyValuePair<FilteredColors, Color> kv in ColorManager.filteredColors)
+        foreach (KeyValuePair<FilteredColors, (float, float, float)> kv in ColorLibrary.filteredColors)
         {
-            if (CheckColor(color.r, kv.Value.r)
-                && CheckColor(color.g, kv.Value.g)
-                    && CheckColor(color.b, kv.Value.b))
+            if (CheckColor(color.r, ColorLibrary.RGBColor(kv.Value).r)
+                && CheckColor(color.g, ColorLibrary.RGBColor(kv.Value).g)
+                    && CheckColor(color.b, ColorLibrary.RGBColor(kv.Value).b))
             {
                 return kv.Key;
             }
@@ -214,7 +214,8 @@ public class ColorPicker : MonoBehaviour
 
             else
             {
-                gameManager.ObjectPainter.CurrentColor = ColorManager.filteredColors[filteredCurrentColor];
+                gameManager.ObjectPainter.CurrentColor = ColorLibrary.RGBColor(
+                    ColorLibrary.filteredColors[filteredCurrentColor]);
                 gameManager.AdvanceActionMode();
                 break;
             }

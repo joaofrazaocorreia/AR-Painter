@@ -926,6 +926,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a0ae09ae25a8e645a4a475e2c627a81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameTime: 180
   numOfColors: 6
   timePerColor: 30
   timerText: {fileID: 118473572}

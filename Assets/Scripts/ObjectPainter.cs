@@ -25,7 +25,7 @@ public class ObjectPainter : MonoBehaviour
     private void Start()
     {
         gameManager = GetComponent<GameManager>();
-        CurrentColor = ColorManager.filteredColors[FilteredColors.None];
+        CurrentColor = ColorLibrary.RGBColor(ColorLibrary.filteredColors[FilteredColors.None]);
 
         pressToPaintUI.SetActive(false);
     }
@@ -33,15 +33,16 @@ public class ObjectPainter : MonoBehaviour
     private void Update()
     {
         pressToPaintUI.SetActive(IsFacingObject && EnabledPainting &&
-            CurrentColor != ColorManager.filteredColors[FilteredColors.None]);
+            CurrentColor != ColorLibrary.RGBColor(ColorLibrary.filteredColors[FilteredColors.None]));
     }
 
     public void PaintObjectParts(int index)
     {
         if (IsFacingObject)
         {
-            gameManager.CurrentPaintable.PaintParts(index, CurrentColor);
-            CurrentColor = ColorManager.filteredColors[FilteredColors.None];
+            gameManager.CurrentPaintable.PaintParts(index, ColorLibrary.BinaryColor(
+                CurrentColor.r, CurrentColor.g, CurrentColor.b));
+            CurrentColor = ColorLibrary.RGBColor(ColorLibrary.filteredColors[FilteredColors.None]);
             pressToPaintUI.SetActive(false);
 
             gameManager.AdvanceActionMode();
