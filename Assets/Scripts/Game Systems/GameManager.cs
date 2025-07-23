@@ -205,15 +205,6 @@ public class GameManager : MonoBehaviour
     private void FinishGame(bool victory)
     {
         playerActionMode = PlayerActionMode.Finished;
-
-        if (victory)
-        {
-
-        }
-
-        else
-        {
-
-        }
+        uiManager.ToggleGameOverScreen(victory);
     }
 }

@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -20,13 +21,14 @@ public class UIManager : MonoBehaviour
 
     [Header("Object Painter HUD Elements")]
     [SerializeField] private GameObject pressToPaintUI;
-    
+
     [Header("Other HUD Elements")]
     [SerializeField] private TextMeshProUGUI errorText;
 
     [Header("Menus")]
+    [SerializeField] private GameObject HUD;
     [SerializeField] private GameObject winScreen;
-    [SerializeField] private GameObject lossScreen;
+    [SerializeField] private GameObject loseScreen;
 
 
 
@@ -36,6 +38,16 @@ public class UIManager : MonoBehaviour
         ToggleColorPickingUI(false);
         UpdateColorCollectingFill(false);
         pressToPaintUI.SetActive(false);
+        
+        HUD.SetActive(true);
+        winScreen.SetActive(false);
+        loseScreen.SetActive(false);
+    }
+
+
+    public void LoadScene(int index)
+    {
+        SceneManager.LoadScene(index);
     }
 
 
@@ -101,5 +113,13 @@ public class UIManager : MonoBehaviour
     public void TogglePaintingPrompt(bool toggle)
     {
         pressToPaintUI.SetActive(toggle);
+    }
+
+
+    public void ToggleGameOverScreen(bool win)
+    {
+        HUD.SetActive(false);
+        winScreen.SetActive(win);
+        loseScreen.SetActive(!win);
     }
 }
