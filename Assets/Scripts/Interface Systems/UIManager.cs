@@ -34,6 +34,7 @@ public class UIManager : MonoBehaviour
     {
         indexCycleTimerText.gameObject.SetActive(false);
         ToggleColorPickingUI(false);
+        UpdateColorCollectingFill(false);
         pressToPaintUI.SetActive(false);
     }
 

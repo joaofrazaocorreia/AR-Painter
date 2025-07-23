@@ -1309,7 +1309,7 @@ MonoBehaviour:
   filteredColorText: {fileID: 555415450}
   currentColorImage: {fileID: 834009393}
   currentColorGoalText: {fileID: 1596939030}
-  currentColorGoalImage: {fileID: 1026432731}
+  currentColorGoalImage: {fileID: 1749747939}
   correctColorImage: {fileID: 168981893}
   pressToPaintUI: {fileID: 1606952655}
   errorText: {fileID: 1587406109}
