@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public enum PlayerActionMode { PaintableSpawning, ColorPicking, ObjectPainting, Finished }
+    public enum PlayerActionMode { PlaneScanning, PaintableSpawning, ColorPicking, ObjectPainting, Finished }
 
     [SerializeField][Min(0)] private float gameTime = 180f;
     [SerializeField][Min(1)] private int numOfColors = 6;
@@ -17,10 +17,9 @@ public class GameManager : MonoBehaviour
     public TouchManager TouchManager { get => touchManager; }
     private UIManager uiManager;
     public UIManager UIManager { get => uiManager; }
+    private PlaneScanner planeScanner;
     private PaintableSpawner paintableSpawner;
-    public PaintableSpawner PaintableSpawner { get => paintableSpawner; }
     private ColorPicker colorPicker;
-    public ColorPicker ColorPicker { get => colorPicker; }
     private ObjectPainter objectPainter;
     public ObjectPainter ObjectPainter { get => objectPainter; }
     private PaintableObject currentPaintable;
@@ -36,8 +35,9 @@ public class GameManager : MonoBehaviour
     {
         touchManager = FindAnyObjectByType<TouchManager>();
         uiManager = FindAnyObjectByType<UIManager>();
-        colorPicker = GetComponent<ColorPicker>();
+        planeScanner = GetComponent<PlaneScanner>();
         paintableSpawner = GetComponent<PaintableSpawner>();
+        colorPicker = GetComponent<ColorPicker>();
         objectPainter = GetComponent<ObjectPainter>();
         currentPaintable = null;
         currentColorIndex = 0;
@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
 
         touchManager.OnFingerDown.AddListener(FingerDownAction);
 
-        playerActionMode = PlayerActionMode.PaintableSpawning;
+        playerActionMode = PlayerActionMode.PlaneScanning;
         uiManager.ToggleTutorialText(1);
         UpdatePlayerAction();
 
@@ -78,6 +78,7 @@ public class GameManager : MonoBehaviour
 
     private void UpdatePlayerAction()
     {
+        planeScanner.EnabledScanning = playerActionMode == PlayerActionMode.PlaneScanning;
         paintableSpawner.EnabledSpawning = playerActionMode == PlayerActionMode.PaintableSpawning;
         colorPicker.EnabledChecking = playerActionMode == PlayerActionMode.ColorPicking;
         objectPainter.EnabledPainting = playerActionMode == PlayerActionMode.ObjectPainting;
@@ -139,17 +140,23 @@ public class GameManager : MonoBehaviour
     {
         switch (playerActionMode)
         {
+            case PlayerActionMode.PlaneScanning:
+                {
+                    playerActionMode = PlayerActionMode.PaintableSpawning;
+                    uiManager.ToggleTutorialText(2);
+                    break;
+                }
             case PlayerActionMode.PaintableSpawning:
                 {
                     playerActionMode = PlayerActionMode.ColorPicking;
-                    uiManager.ToggleTutorialText(2);
+                    uiManager.ToggleTutorialText(3);
                     break;
                 }
 
             case PlayerActionMode.ColorPicking:
                 {
                     playerActionMode = PlayerActionMode.ObjectPainting;
-                    uiManager.ToggleTutorialText(3);
+                    uiManager.ToggleTutorialText(4);
                     break;
                 }
 
@@ -160,7 +167,7 @@ public class GameManager : MonoBehaviour
                     if (incompleteGoalIndexes.Count > 0)
                     {
                         playerActionMode = PlayerActionMode.ColorPicking;
-                        uiManager.ToggleTutorialText(2);
+                        uiManager.ToggleTutorialText(3);
                         CycleColorIndex();
                     }
 

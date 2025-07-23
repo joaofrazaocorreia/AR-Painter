@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject crosshair;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI indexCycleTimerText;
+    [SerializeField] private GameObject planeScanningTutorialText;
     [SerializeField] private GameObject paintableSpawnerTutorialText;
     [SerializeField] private GameObject colorPickerTutorialText;
     [SerializeField] private GameObject objectPainterTutorialText;
@@ -92,15 +93,16 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// Toggles the Tutorial text on the HUD based on the given index.
     /// </summary>
-    /// <param name="tipIndex">0 = disable all tips; 1 = spawning tip;
-    /// 2 = color picking tip; 3 = painting tip.</param>
+    /// <param name="tipIndex">0 = disable all tips; 1 = scanning tip; 
+    /// 2 = spawning tip; 3 = color picking tip; 4 = painting tip.</param>
     public void ToggleTutorialText(int tipIndex)
     {
-        tipIndex = Mathf.Clamp(tipIndex, 0, 3);
+        tipIndex = Mathf.Clamp(tipIndex, 0, 4);
 
-        paintableSpawnerTutorialText.SetActive(tipIndex == 1);
-        colorPickerTutorialText.SetActive(tipIndex == 2);
-        objectPainterTutorialText.SetActive(tipIndex == 3);
+        planeScanningTutorialText.SetActive(tipIndex == 1);
+        paintableSpawnerTutorialText.SetActive(tipIndex == 2);
+        colorPickerTutorialText.SetActive(tipIndex == 3);
+        objectPainterTutorialText.SetActive(tipIndex == 4);
     }
 
 
