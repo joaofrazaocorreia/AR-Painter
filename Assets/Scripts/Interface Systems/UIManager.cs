@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,6 +31,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI errorText;
 
     [Header("Menus")]
+    [SerializeField] private CanvasGroup loadingScreen;
     [SerializeField] private GameObject HUD;
     [SerializeField] private GameObject winScreen;
     [SerializeField] private GameObject loseScreen;
@@ -42,16 +44,49 @@ public class UIManager : MonoBehaviour
         ToggleColorPickingUI(false);
         UpdateColorCollectingFill(false);
         pressToPaintUI.SetActive(false);
-        
+
+        loadingScreen.blocksRaycasts = true;
         HUD.SetActive(true);
         winScreen.SetActive(false);
         loseScreen.SetActive(false);
+
+        StartCoroutine(UnfadeLoadingScreen(loadingScreen));
     }
 
 
     public void LoadScene(int index)
     {
+        StartCoroutine(LoadSceneCoroutine(index, loadingScreen));
+    }
+
+    public static IEnumerator LoadSceneCoroutine(int index, CanvasGroup loadingScreen, float speed = 1)
+    {
+        loadingScreen.alpha = 0f;
+        loadingScreen.blocksRaycasts = true;
+        loadingScreen.gameObject.SetActive(true);
+
+        while (loadingScreen.alpha < 1)
+        {
+            loadingScreen.alpha += Time.fixedDeltaTime * speed;
+            yield return null;
+        }
+
         SceneManager.LoadScene(index);
+    }
+
+    public static IEnumerator UnfadeLoadingScreen(CanvasGroup loadingScreen, float speed = 1)
+    {
+        loadingScreen.alpha = 1f;
+        loadingScreen.gameObject.SetActive(true);
+
+        while (loadingScreen.alpha > 0)
+        {
+            loadingScreen.alpha -= Time.fixedDeltaTime * speed;
+            yield return null;
+        }
+
+        loadingScreen.gameObject.SetActive(false);
+        loadingScreen.blocksRaycasts = false;
     }
 
     /// <summary>
