@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour
     [Header("Game Manager HUD Elements")]
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI indexCycleTimerText;
+
     [Header("Color Picker HUD Elements")]
     [SerializeField] private GameObject colorCollectingBar;
     [SerializeField] private Image colorCollectingFill;
@@ -16,8 +17,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI currentColorGoalText;
     [SerializeField] private Image currentColorGoalImage;
     [SerializeField] private Image correctColorImage;
+
     [Header("Object Painter HUD Elements")]
     [SerializeField] private GameObject pressToPaintUI;
+    
     [Header("Other HUD Elements")]
     [SerializeField] private TextMeshProUGUI errorText;
 
