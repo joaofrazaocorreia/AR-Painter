@@ -9,7 +9,7 @@ public class PaintableSpawner : MonoBehaviour
     private bool enabledSpawning;
     public bool EnabledSpawning { get => enabledSpawning; set { enabledSpawning = value; } }
 
-    [SerializeField] private GameObject prefabToSpawn;
+    [SerializeField] private List<GameObject> prefabsToSpawn;
     [SerializeField] private GameObject raycastHitCursor;
 
     private ARRaycastManager raycastManager;
@@ -41,7 +41,8 @@ public class PaintableSpawner : MonoBehaviour
 
     public void SpawnObject()
     {
-        if (EnabledSpawning && raycastManager.Raycast(middleScreenPosition, hits, TrackableType.PlaneWithinPolygon))
+        if (EnabledSpawning && raycastManager.Raycast(middleScreenPosition, hits,
+            TrackableType.PlaneWithinPolygon))
         {
             if (planeManager.GetPlane(hits[0].trackableId).alignment == PlaneAlignment.HorizontalUp)
             {
@@ -51,8 +52,11 @@ public class PaintableSpawner : MonoBehaviour
 
                 Quaternion faceCameraRotation = Quaternion.Euler(direction);
 
-                gameManager.CurrentPaintable = Instantiate(prefabToSpawn, hits[0].pose.position, faceCameraRotation).
-                    GetComponent<PaintableObject>();
+                int randomIndex = Random.Range(0, prefabsToSpawn.Count);
+                GameObject chosenPaintable = prefabsToSpawn[randomIndex];
+
+                gameManager.CurrentPaintable = Instantiate(chosenPaintable, hits[0].pose.position,
+                    faceCameraRotation).GetComponent<PaintableObject>();
 
                 gameManager.AdvanceActionMode();
             }

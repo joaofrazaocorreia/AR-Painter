@@ -1382,8 +1382,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11de72e3c4d99834281713f98c3ef9ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabToSpawn: {fileID: 744809488221843653, guid: 020cf175fe8ab344cbf600a76098c6b3,
-    type: 3}
+  prefabsToSpawn:
+  - {fileID: 744809488221843653, guid: 020cf175fe8ab344cbf600a76098c6b3, type: 3}
   raycastHitCursor: {fileID: 254469670}
 --- !u!114 &569199284
 MonoBehaviour:
