@@ -10,13 +10,14 @@ public class PaintableSpawner : MonoBehaviour
     public bool EnabledSpawning { get => enabledSpawning; set { enabledSpawning = value; } }
 
     [SerializeField] private List<GameObject> prefabsToSpawn;
-    [SerializeField] private GameObject raycastHitCursor;
+    [SerializeField] private GameObject raycastCursorPrefab;
 
     private ARRaycastManager raycastManager;
     private ARPlaneManager planeManager;
     private GameManager gameManager;
     private List<ARRaycastHit> hits;
     private Vector2 middleScreenPosition;
+    private GameObject raycastHitCursor;
 
     private void Start()
     {
@@ -25,6 +26,7 @@ public class PaintableSpawner : MonoBehaviour
         gameManager = GetComponent<GameManager>();
 
         hits = new List<ARRaycastHit>();
+        raycastHitCursor = Instantiate(raycastCursorPrefab);
     }
 
     private void Update()
