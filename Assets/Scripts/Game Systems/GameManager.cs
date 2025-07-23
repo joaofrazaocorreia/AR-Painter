@@ -53,8 +53,7 @@ public class GameManager : MonoBehaviour
                 (c => !chosenColorGoals.Contains(c)).ToList();
 
             int randomIndex = Random.Range(1, availableColors.Count());
-            //FilteredColors randomColor = availableColors.ElementAt(randomIndex);
-            FilteredColors randomColor = FilteredColors.Black;
+            FilteredColors randomColor = availableColors.ElementAt(randomIndex);
 
             chosenColorGoals.Add(randomColor);
             incompleteGoalIndexes.Add(i);

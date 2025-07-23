@@ -1293,7 +1293,7 @@ MonoBehaviour:
   updateViewRatePerSec: 6
   colorFilterTreshold: 30
   colorCollectingTime: 1
-  debug: 1
+  debug: 0
 --- !u!114 &569199282
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1322,7 +1322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameTime: 180
-  numOfColors: 1
+  numOfColors: 6
   timePerColor: 30
 --- !u!114 &569199285
 MonoBehaviour:
