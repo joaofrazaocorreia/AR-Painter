@@ -6,8 +6,12 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     [Header("Game Manager HUD Elements")]
+    [SerializeField] private GameObject crosshair;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI indexCycleTimerText;
+    [SerializeField] private GameObject paintableSpawnerTutorialText;
+    [SerializeField] private GameObject colorPickerTutorialText;
+    [SerializeField] private GameObject objectPainterTutorialText;
 
     [Header("Color Picker HUD Elements")]
     [SerializeField] private GameObject colorCollectingBar;
@@ -50,6 +54,20 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene(index);
     }
 
+    /// <summary>
+    /// Toggles the Tutorial text on the HUD based on the given index.
+    /// </summary>
+    /// <param name="tipIndex">0 = disable all tips; 1 = spawning tip;
+    /// 2 = color picking tip; 3 = painting tip.</param>
+    public void ToggleTutorialText(int tipIndex)
+    {
+        tipIndex = Mathf.Clamp(tipIndex, 0, 3);
+
+        paintableSpawnerTutorialText.SetActive(tipIndex == 1);
+        colorPickerTutorialText.SetActive(tipIndex == 2);
+        objectPainterTutorialText.SetActive(tipIndex == 3);
+    }
+
 
     public void UpdateGameTimerText(float gameTimer)
     {
@@ -73,7 +91,7 @@ public class UIManager : MonoBehaviour
     {
         currentColorGoalText.gameObject.SetActive(toggle);
         currentColorGoalImage.gameObject.SetActive(toggle);
-        correctColorImage.gameObject.SetActive(toggle);
+        ToggleCrosshairs(!toggle);
     }
 
     public void ToggleColorPickingDebug(bool toggle)
@@ -81,6 +99,12 @@ public class UIManager : MonoBehaviour
         currentColorText.gameObject.SetActive(toggle);
         filteredColorText.gameObject.SetActive(toggle);
         currentColorImage.gameObject.SetActive(toggle);
+    }
+
+    public void ToggleCrosshairs(bool useDefault)
+    {
+        crosshair.SetActive(useDefault);
+        correctColorImage.gameObject.SetActive(!useDefault);
     }
 
     public void UpdateColorCollectingFill(bool active, float fill = 0f)

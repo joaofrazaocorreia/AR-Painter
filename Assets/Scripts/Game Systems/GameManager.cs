@@ -53,7 +53,8 @@ public class GameManager : MonoBehaviour
                 (c => !chosenColorGoals.Contains(c)).ToList();
 
             int randomIndex = Random.Range(1, availableColors.Count());
-            FilteredColors randomColor = availableColors.ElementAt(randomIndex);
+            //FilteredColors randomColor = availableColors.ElementAt(randomIndex);
+            FilteredColors randomColor = FilteredColors.Black;
 
             chosenColorGoals.Add(randomColor);
             incompleteGoalIndexes.Add(i);
@@ -62,6 +63,7 @@ public class GameManager : MonoBehaviour
         touchManager.OnFingerDown.AddListener(FingerDownAction);
 
         playerActionMode = PlayerActionMode.PaintableSpawning;
+        uiManager.ToggleTutorialText(1);
         UpdatePlayerAction();
 
         gameTimer = gameTime;
@@ -141,12 +143,14 @@ public class GameManager : MonoBehaviour
             case PlayerActionMode.PaintableSpawning:
                 {
                     playerActionMode = PlayerActionMode.ColorPicking;
+                    uiManager.ToggleTutorialText(2);
                     break;
                 }
 
             case PlayerActionMode.ColorPicking:
                 {
                     playerActionMode = PlayerActionMode.ObjectPainting;
+                    uiManager.ToggleTutorialText(3);
                     break;
                 }
 
@@ -157,12 +161,14 @@ public class GameManager : MonoBehaviour
                     if (incompleteGoalIndexes.Count > 0)
                     {
                         playerActionMode = PlayerActionMode.ColorPicking;
+                        uiManager.ToggleTutorialText(2);
                         CycleColorIndex();
                     }
 
                     else
                     {
-                        FinishGame(victory:true);
+                        uiManager.ToggleTutorialText(0);
+                        FinishGame(victory: true);
                     }
 
                     break;
@@ -173,6 +179,8 @@ public class GameManager : MonoBehaviour
                     break;
                 }
         }
+
+        uiManager.ToggleCrosshairs(playerActionMode != PlayerActionMode.ColorPicking);
     }
 
     private void CycleColorIndex()
