@@ -17,7 +17,7 @@ public class PaintableSpawner : MonoBehaviour
     private GameManager gameManager;
     private List<ARRaycastHit> hits;
     private Vector2 middleScreenPosition;
-    private GameObject raycastHitCursor;
+    private ParticleSystem raycastHitCursor;
 
     private void Start()
     {
@@ -26,18 +26,30 @@ public class PaintableSpawner : MonoBehaviour
         gameManager = GetComponent<GameManager>();
 
         hits = new List<ARRaycastHit>();
-        raycastHitCursor = Instantiate(raycastCursorPrefab);
+        raycastHitCursor = Instantiate(raycastCursorPrefab).GetComponentInChildren<ParticleSystem>();
     }
 
     private void Update()
     {
-        raycastHitCursor.SetActive(EnabledSpawning);
-        middleScreenPosition = Camera.main.ViewportToScreenPoint(new Vector2(0.5f, 0.5f));
-
-        if (raycastManager.Raycast(middleScreenPosition, hits, TrackableType.PlaneWithinPolygon))
+        if (EnabledSpawning)
         {
-            raycastHitCursor.transform.position = hits[0].pose.position;
-            raycastHitCursor.transform.rotation = hits[0].pose.rotation;
+            if (!raycastHitCursor.isPlaying)
+            {
+                raycastHitCursor.Play();
+            }
+
+            middleScreenPosition = Camera.main.ViewportToScreenPoint(new Vector2(0.5f, 0.5f));
+
+            if (raycastManager.Raycast(middleScreenPosition, hits, TrackableType.PlaneWithinPolygon))
+            {
+                raycastHitCursor.transform.position = hits[0].pose.position;
+                raycastHitCursor.transform.rotation = hits[0].pose.rotation;
+            }
+        }
+
+        else if (raycastHitCursor.isPlaying)
+        {
+            raycastHitCursor.Stop();
         }
     }
 
