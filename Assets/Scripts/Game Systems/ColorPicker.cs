@@ -66,7 +66,7 @@ public class ColorPicker : MonoBehaviour
         {
             gameManager.UIManager.ToggleColorPickingUI(false);
             gameManager.UIManager.ToggleColorPickingDebug(false);
-            //gameManager.UIManager.UpdateColorCollectingFill(false);
+            gameManager.UIManager.ToggleCollectingPrompt(false);
         }
     }
 

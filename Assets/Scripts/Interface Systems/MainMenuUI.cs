@@ -14,9 +14,4 @@ public class MainMenuUI : MonoBehaviour
     {
         StartCoroutine(UIManager.LoadSceneCoroutine(index, loadingScreen));
     }
-
-    public void QuitGame()
-    {
-        Application.Quit();
-    }
 }

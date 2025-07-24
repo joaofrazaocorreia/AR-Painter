@@ -24,6 +24,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI currentColorGoalText;
     [SerializeField] private Image currentColorGoalImage;
     [SerializeField] private Image correctColorImage;
+    [SerializeField] private GameObject holdToCollectUI;
 
     [Header("Object Painter HUD Elements")]
     [SerializeField] private GameObject pressToPaintUI;
@@ -44,6 +45,7 @@ public class UIManager : MonoBehaviour
         indexCycleTimerText.gameObject.SetActive(false);
         ToggleColorPickingUI(false);
         UpdateColorCollectingFill(false);
+        holdToCollectUI.SetActive(false);
         pressToPaintUI.SetActive(false);
 
         loadingScreen.blocksRaycasts = true;
@@ -165,9 +167,19 @@ public class UIManager : MonoBehaviour
         currentColorGoalImage.color = ColorLibrary.BinaryColor(ColorLibrary.filteredColors[currentColorGoal]);
 
         if (colorMatch)
+        {
             correctColorImage.color = Color.green;
+            holdToCollectUI.SetActive(true);
+        }
         else
+        {
             correctColorImage.color = Color.red;
+            holdToCollectUI.SetActive(false);
+        }
+    }
+    public void ToggleCollectingPrompt(bool toggle)
+    {
+        holdToCollectUI.SetActive(toggle);
     }
 
 
