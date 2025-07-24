@@ -60,7 +60,7 @@ public class UIManager : MonoBehaviour
         winScreen.SetActive(false);
         loseScreen.SetActive(false);
 
-        StartCoroutine(UnfadeLoadingScreen(loadingScreen));
+        StartCoroutine(UnfadeScreen(loadingScreen));
     }
 
 
@@ -84,7 +84,7 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene(index);
     }
 
-    public static IEnumerator UnfadeLoadingScreen(CanvasGroup loadingScreen, float speed = 1)
+    public static IEnumerator UnfadeScreen(CanvasGroup loadingScreen, float speed = 1)
     {
         loadingScreen.alpha = 1f;
         loadingScreen.gameObject.SetActive(true);

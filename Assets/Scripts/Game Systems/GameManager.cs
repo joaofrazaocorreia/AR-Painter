@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     public TouchManager TouchManager { get => touchManager; }
     private UIManager uiManager;
     public UIManager UIManager { get => uiManager; }
+    private AudioManager audioManager;
+    public AudioManager AudioManager { get => audioManager; }
     private PlaneScanner planeScanner;
     private PaintableSpawner paintableSpawner;
     private ColorPicker colorPicker;
@@ -27,9 +29,11 @@ public class GameManager : MonoBehaviour
     public bool IsGameActive { get => playerActionMode == PlayerActionMode.ColorPicking ||
         playerActionMode == PlayerActionMode.ObjectPainting; }
     private float gameTimer;
+    private float gameTimerTickTimer;
     private int currentColorIndex;
     private List<int> incompleteGoalIndexes;
     private float indexCycleTimer;
+    private float colorTimerTickTimer;
     private List<FilteredColors> chosenColorGoals;
     public FilteredColors CurrentColorGoal { get => chosenColorGoals[currentColorIndex]; }
 
@@ -37,10 +41,13 @@ public class GameManager : MonoBehaviour
     {
         touchManager = FindAnyObjectByType<TouchManager>();
         uiManager = FindAnyObjectByType<UIManager>();
+        audioManager = FindAnyObjectByType<AudioManager>();
+
         planeScanner = GetComponent<PlaneScanner>();
         paintableSpawner = GetComponent<PaintableSpawner>();
         colorPicker = GetComponent<ColorPicker>();
         objectPainter = GetComponent<ObjectPainter>();
+
         currentPaintable = null;
         currentColorIndex = 0;
         incompleteGoalIndexes = new List<int>();
@@ -56,6 +63,7 @@ public class GameManager : MonoBehaviour
 
             int randomIndex = Random.Range(1, availableColors.Count());
             FilteredColors randomColor = availableColors.ElementAt(randomIndex);
+            //FilteredColors randomColor = FilteredColors.Black;
 
             chosenColorGoals.Add(randomColor);
             incompleteGoalIndexes.Add(i);
@@ -94,6 +102,16 @@ public class GameManager : MonoBehaviour
             {
                 gameTimer = Mathf.Max(gameTimer - Time.deltaTime, 0f);
                 uiManager.UpdateGameTimerText(gameTimer, IsGameActive);
+
+                if (gameTimer <= 10)
+                {
+                    gameTimerTickTimer -= Time.deltaTime;
+                    if (gameTimerTickTimer <= 0)
+                    {
+                        AudioManager.PlayGameTimerTickSFX(gameTimer < 1);
+                        gameTimerTickTimer = 1f;
+                    }
+                }
             }
 
             if (playerActionMode == PlayerActionMode.ColorPicking)
@@ -108,11 +126,21 @@ public class GameManager : MonoBehaviour
                     indexCycleTimer -= Time.deltaTime;
                     uiManager.UpdateColorCycleTimer(incompleteGoalIndexes.Count > 1
                         && indexCycleTimer <= 10, indexCycleTimer);
+
+                    if (indexCycleTimer <= 10)
+                    {
+                        colorTimerTickTimer -= Time.deltaTime;
+                        if (colorTimerTickTimer <= 0)
+                        {
+                            AudioManager.PlayColorTimerTickSFX(indexCycleTimer < 1);
+                            colorTimerTickTimer = 1f;
+                        }
+                    }
                 }
             }
         }
 
-        else
+        else if(playerActionMode != PlayerActionMode.Finished)
         {
             uiManager.UpdateGameTimerText(0, false);
             uiManager.UpdateColorCycleTimer(false);
@@ -152,6 +180,8 @@ public class GameManager : MonoBehaviour
                 {
                     playerActionMode = PlayerActionMode.ColorPicking;
                     uiManager.UpdateTutorialText(3);
+                    AudioManager.PlaySucessSFX();
+                    AudioManager.SetMusicVolume(1f);
                     break;
                 }
 
@@ -159,6 +189,7 @@ public class GameManager : MonoBehaviour
                 {
                     playerActionMode = PlayerActionMode.ObjectPainting;
                     uiManager.UpdateTutorialText(4);
+                    AudioManager.PlaySucessSFX();
                     break;
                 }
 
@@ -170,6 +201,7 @@ public class GameManager : MonoBehaviour
                     {
                         playerActionMode = PlayerActionMode.ColorPicking;
                         uiManager.UpdateTutorialText(3);
+                        AudioManager.PlaySucessSFX();
                         CycleColorIndex();
                     }
 
@@ -222,5 +254,8 @@ public class GameManager : MonoBehaviour
     {
         playerActionMode = PlayerActionMode.Finished;
         uiManager.ToggleGameOverScreen(victory);
+
+        if (victory) AudioManager.PlayWinSFX();
+        else AudioManager.PlayLoseSFX();
     }
 }

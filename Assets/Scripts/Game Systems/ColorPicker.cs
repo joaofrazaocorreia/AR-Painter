@@ -164,6 +164,9 @@ public class ColorPicker : MonoBehaviour
     private IEnumerator HoldToCollectColor()
     {
         float collectingTimer = colorCollectingTime;
+        bool playCancelSound = true;
+
+        gameManager.AudioManager.ToggleTapHoldSFX(true, colorCollectingTime);
 
         while (EnabledChecking && gameManager.TouchManager.Touching &&
             FilteredCurrentColor == gameManager.CurrentColorGoal)
@@ -182,10 +185,14 @@ public class ColorPicker : MonoBehaviour
                 gameManager.ObjectPainter.CurrentColor = ColorLibrary.RGBColor(
                     ColorLibrary.filteredColors[filteredCurrentColor]);
                 gameManager.AdvanceActionMode();
+                playCancelSound = false;
                 break;
             }
         }
-
+        
         gameManager.UIManager.UpdateColorCollectingFill(false);
+        
+        if (playCancelSound)
+            gameManager.AudioManager.ToggleTapHoldSFX(false);
     }
 }

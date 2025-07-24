@@ -80,6 +80,8 @@ public class PaintableSpawner : MonoBehaviour
                 gameManager.CurrentPaintable = Instantiate(chosenPaintable, hits[0].pose.position,
                     faceCameraRotation).GetComponent<PaintableObject>();
 
+                gameManager.AudioManager.PlayTapActionSFX();
+
                 gameManager.AdvanceActionMode();
             }
         }
