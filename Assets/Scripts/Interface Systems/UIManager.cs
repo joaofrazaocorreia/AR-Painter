@@ -19,6 +19,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private bool permaToggleTutorialUI;
     private bool tutorialActive;
 
+    [Header("Paintable Spawner HUD Elements")]
+    [SerializeField] private GameObject tapToSpawnUI;
+
     [Header("Color Picker HUD Elements")]
     [SerializeField] private GameObject colorCollectingBar;
     [SerializeField] private Image colorCollectingFill;
@@ -149,6 +152,11 @@ public class UIManager : MonoBehaviour
         indexCycleTimerText.text = $"Swapping in {Mathf.Ceil(timer)}...";
     }
 
+
+    public void ToggleSpawningPrompt(bool toggle)
+    {
+        tapToSpawnUI.SetActive(toggle);
+    }
 
 
     public void ToggleColorPickingUI(bool toggle)

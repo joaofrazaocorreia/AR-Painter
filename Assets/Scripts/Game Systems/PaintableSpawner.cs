@@ -39,17 +39,25 @@ public class PaintableSpawner : MonoBehaviour
             }
 
             middleScreenPosition = Camera.main.ViewportToScreenPoint(new Vector2(0.5f, 0.5f));
-
-            if (raycastManager.Raycast(middleScreenPosition, hits, TrackableType.PlaneWithinPolygon))
+            bool hitARPlane = raycastManager.Raycast(middleScreenPosition, hits, TrackableType.PlaneWithinPolygon);
+            
+            if (hitARPlane)
             {
                 raycastHitCursor.transform.position = hits[0].pose.position;
                 raycastHitCursor.transform.rotation = hits[0].pose.rotation;
             }
+
+            gameManager.UIManager.ToggleSpawningPrompt(hitARPlane);
         }
 
-        else if (raycastHitCursor.isPlaying)
+        else
         {
-            raycastHitCursor.Stop();
+            if (raycastHitCursor.isPlaying)
+            {
+                raycastHitCursor.Stop();
+            }
+
+            gameManager.UIManager.ToggleSpawningPrompt(false);
         }
     }
 
