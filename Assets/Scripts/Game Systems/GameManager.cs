@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     public ObjectPainter ObjectPainter { get => objectPainter; }
     private PaintableObject currentPaintable;
     public PaintableObject CurrentPaintable { get => currentPaintable; set { currentPaintable = value; } }
+    public bool IsGameActive { get => playerActionMode == PlayerActionMode.ColorPicking ||
+        playerActionMode == PlayerActionMode.ObjectPainting; }
     private float gameTimer;
     private int currentColorIndex;
     private List<int> incompleteGoalIndexes;
@@ -62,11 +64,11 @@ public class GameManager : MonoBehaviour
         touchManager.OnFingerDown.AddListener(FingerDownAction);
 
         playerActionMode = PlayerActionMode.PlaneScanning;
-        uiManager.ToggleTutorialText(1);
+        uiManager.UpdateTutorialText(1);
         UpdatePlayerAction();
 
         gameTimer = gameTime;
-        uiManager.UpdateGameTimerText(gameTimer);
+        uiManager.UpdateGameTimerText(gameTimer, IsGameActive);
     }
 
     private void Update()
@@ -88,11 +90,10 @@ public class GameManager : MonoBehaviour
     {
         if (gameTimer > 0)
         {
-            if (playerActionMode != PlayerActionMode.PaintableSpawning &&
-                playerActionMode != PlayerActionMode.Finished)
+            if (IsGameActive)
             {
                 gameTimer = Mathf.Max(gameTimer - Time.deltaTime, 0f);
-                uiManager.UpdateGameTimerText(gameTimer);
+                uiManager.UpdateGameTimerText(gameTimer, IsGameActive);
             }
 
             if (playerActionMode == PlayerActionMode.ColorPicking)
@@ -113,6 +114,7 @@ public class GameManager : MonoBehaviour
 
         else
         {
+            uiManager.UpdateGameTimerText(0, false);
             uiManager.UpdateColorCycleTimer(false);
             FinishGame(victory: false);
         }
@@ -143,20 +145,20 @@ public class GameManager : MonoBehaviour
             case PlayerActionMode.PlaneScanning:
                 {
                     playerActionMode = PlayerActionMode.PaintableSpawning;
-                    uiManager.ToggleTutorialText(2);
+                    uiManager.UpdateTutorialText(2);
                     break;
                 }
             case PlayerActionMode.PaintableSpawning:
                 {
                     playerActionMode = PlayerActionMode.ColorPicking;
-                    uiManager.ToggleTutorialText(3);
+                    uiManager.UpdateTutorialText(3);
                     break;
                 }
 
             case PlayerActionMode.ColorPicking:
                 {
                     playerActionMode = PlayerActionMode.ObjectPainting;
-                    uiManager.ToggleTutorialText(4);
+                    uiManager.UpdateTutorialText(4);
                     break;
                 }
 
@@ -167,13 +169,13 @@ public class GameManager : MonoBehaviour
                     if (incompleteGoalIndexes.Count > 0)
                     {
                         playerActionMode = PlayerActionMode.ColorPicking;
-                        uiManager.ToggleTutorialText(3);
+                        uiManager.UpdateTutorialText(3);
                         CycleColorIndex();
                     }
 
                     else
                     {
-                        uiManager.ToggleTutorialText(0);
+                        uiManager.UpdateTutorialText(0);
                         FinishGame(victory: true);
                     }
 

@@ -9,11 +9,15 @@ public class UIManager : MonoBehaviour
     [Header("Game Manager HUD Elements")]
     [SerializeField] private GameObject crosshair;
     [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private GameObject timerBackgroundUI;
     [SerializeField] private TextMeshProUGUI indexCycleTimerText;
     [SerializeField] private GameObject planeScanningTutorialText;
     [SerializeField] private GameObject paintableSpawnerTutorialText;
     [SerializeField] private GameObject colorPickerTutorialText;
     [SerializeField] private GameObject objectPainterTutorialText;
+    [SerializeField] private GameObject tutorialBackgroundUI;
+    [SerializeField] private bool permaToggleTutorialUI;
+    private bool tutorialActive;
 
     [Header("Color Picker HUD Elements")]
     [SerializeField] private GameObject colorCollectingBar;
@@ -39,10 +43,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject loseScreen;
 
 
-
-    private void Start()
+    private void Awake()
     {
         indexCycleTimerText.gameObject.SetActive(false);
+        tutorialActive = true;
         ToggleColorPickingUI(false);
         UpdateColorCollectingFill(false);
         holdToCollectUI.SetActive(false);
@@ -97,25 +101,46 @@ public class UIManager : MonoBehaviour
     /// </summary>
     /// <param name="tipIndex">0 = disable all tips; 1 = scanning tip; 
     /// 2 = spawning tip; 3 = color picking tip; 4 = painting tip.</param>
-    public void ToggleTutorialText(int tipIndex)
+    public void UpdateTutorialText(int tipIndex)
     {
         tipIndex = Mathf.Clamp(tipIndex, 0, 4);
 
-        planeScanningTutorialText.SetActive(tipIndex == 1);
-        paintableSpawnerTutorialText.SetActive(tipIndex == 2);
-        colorPickerTutorialText.SetActive(tipIndex == 3);
-        objectPainterTutorialText.SetActive(tipIndex == 4);
+        tutorialBackgroundUI.SetActive(tipIndex != 0 && tutorialActive);
+        planeScanningTutorialText.SetActive(tipIndex == 1 && tutorialActive);
+        paintableSpawnerTutorialText.SetActive(tipIndex == 2 && tutorialActive);
+        colorPickerTutorialText.SetActive(tipIndex == 3 && tutorialActive);
+        objectPainterTutorialText.SetActive(tipIndex == 4 && tutorialActive);
+    }
+
+    public void ToggleTutorialText(bool toggle)
+    {
+        if (permaToggleTutorialUI)
+        {
+            tutorialActive = toggle;
+
+            if (!toggle)
+                UpdateTutorialText(0);
+        }
+
+        else
+            UpdateTutorialText(0);
     }
 
 
-    public void UpdateGameTimerText(float gameTimer)
+    public void UpdateGameTimerText(float gameTimer, bool active)
     {
-        int minutes = (int)Mathf.Floor(gameTimer / 60);
-        int seconds = (int)Mathf.Floor(gameTimer % 60);
+        timerText.gameObject.SetActive(active);
+        timerBackgroundUI.SetActive(active);
 
-        timerText.text = $"{minutes}:";
-        if (seconds < 10) timerText.text += "0";
-        timerText.text += $"{seconds}";
+        if (active)
+        {
+            int minutes = (int)Mathf.Floor(gameTimer / 60);
+            int seconds = (int)Mathf.Floor(gameTimer % 60);
+
+            timerText.text = $"{minutes}:";
+            if (seconds < 10) timerText.text += "0";
+            timerText.text += $"{seconds}";
+        }
     }
 
     public void UpdateColorCycleTimer(bool active, float timer = 0f)
