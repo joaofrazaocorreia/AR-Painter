@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
 
             int randomIndex = Random.Range(1, availableColors.Count());
             FilteredColors randomColor = availableColors.ElementAt(randomIndex);
-            //FilteredColors randomColor = FilteredColors.Black;
+            //FilteredColors randomColor = FilteredColors.DarkGrey;
 
             chosenColorGoals.Add(randomColor);
             incompleteGoalIndexes.Add(i);
@@ -210,6 +210,7 @@ public class GameManager : MonoBehaviour
                     else
                     {
                         uiManager.UpdateTutorialText(0);
+                        currentPaintable.VictoryParticles();
                         FinishGame(victory: true);
                     }
 
