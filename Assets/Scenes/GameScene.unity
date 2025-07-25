@@ -1536,7 +1536,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabsToSpawn:
-  - {fileID: 744809488221843653, guid: 020cf175fe8ab344cbf600a76098c6b3, type: 3}
+  - {fileID: 7706356890739574295, guid: 718da6024e2809744b08750a661bb1c8, type: 3}
+  - {fileID: 1332801787849187889, guid: b4fe7ae05b297994695c9005bf6598ca, type: 3}
+  - {fileID: 3914803386428936270, guid: 7e725fa790759e947999c834e84a991c, type: 3}
   raycastCursorPrefab: {fileID: 7502198070378493967, guid: dca5a230a98bc6a43980d3b89d6d8d8b,
     type: 3}
 --- !u!114 &569199284
