@@ -128,7 +128,7 @@ public class GameManager : MonoBehaviour
                     uiManager.UpdateColorCycleTimer(incompleteGoalIndexes.Count > 1
                         && indexCycleTimer <= 10, indexCycleTimer);
 
-                    if (indexCycleTimer <= 10)
+                    if (incompleteGoalIndexes.Count > 1 && indexCycleTimer <= 10)
                     {
                         colorTimerTickTimer -= Time.deltaTime;
                         if (colorTimerTickTimer <= 0)
