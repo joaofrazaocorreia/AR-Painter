@@ -28,8 +28,8 @@ public class ColorPicker : MonoBehaviour
 
     private GameManager gameManager;
     private float updateViewTimer;
-    private FilteredColors filteredCurrentColor;
-    public FilteredColors FilteredCurrentColor { get => filteredCurrentColor; }
+    private List<FilteredColors> filteredCurrentColors;
+    public List<FilteredColors> FilteredCurrentColors { get => filteredCurrentColors; }
 
     [Header("Debug UI")]
     [SerializeField] private bool debug = false;
@@ -109,17 +109,18 @@ public class ColorPicker : MonoBehaviour
             Mathf.Floor(greenAmount * 255), Mathf.Floor(blueAmount * 255));
 
         // Updates the current filtered color
-        filteredCurrentColor = FilterColor(averageColor);
+        filteredCurrentColors = new List<FilteredColors>();
+        filteredCurrentColors = FilterColor(averageColor);
 
         // Updates the color picking UI
         gameManager.UIManager.ToggleColorPickingUI(true);
         gameManager.UIManager.UpdateColorGoalUI(gameManager.CurrentColorGoal,
-            filteredCurrentColor == gameManager.CurrentColorGoal);
+            filteredCurrentColors.Contains(gameManager.CurrentColorGoal));
 
         // Updates the debug UI
         gameManager.UIManager.ToggleColorPickingDebug(debug);
         gameManager.UIManager.UpdateColorPickingDebug(new Color(redAmount, greenAmount, blueAmount),
-            averageColor, filteredCurrentColor);
+            averageColor, filteredCurrentColors);
 
         // Destroys the stored screenshot to avoid lag
         Destroy(texture);
@@ -130,19 +131,24 @@ public class ColorPicker : MonoBehaviour
     /// </summary>
     /// <param name="color">The given color to filter.</param>
     /// <returns>The filtered color if applicable; None if the color didn't match any filter.</returns>
-    private FilteredColors FilterColor(Color color)
+    private List<FilteredColors> FilterColor(Color color)
     {
+        List<FilteredColors> colorsWithinTreshold = new List<FilteredColors>();
+
         foreach (KeyValuePair<FilteredColors, (float, float, float)> kv in ColorLibrary.filteredColors)
         {
             if (CheckColor(color.r, ColorLibrary.RGBColor(kv.Value).r)
                 && CheckColor(color.g, ColorLibrary.RGBColor(kv.Value).g)
                     && CheckColor(color.b, ColorLibrary.RGBColor(kv.Value).b))
             {
-                return kv.Key;
+                colorsWithinTreshold.Add(kv.Key);
             }
         }
 
-        return FilteredColors.None;
+        if (colorsWithinTreshold.Count == 0)
+            colorsWithinTreshold.Add(FilteredColors.None);
+
+        return colorsWithinTreshold;
     }
 
     /// <summary>
@@ -169,7 +175,7 @@ public class ColorPicker : MonoBehaviour
         gameManager.AudioManager.ToggleTapHoldSFX(true, colorCollectingTime);
 
         while (EnabledChecking && gameManager.TouchManager.Touching &&
-            FilteredCurrentColor == gameManager.CurrentColorGoal)
+            FilteredCurrentColors.Contains(gameManager.CurrentColorGoal))
         {
             if (collectingTimer > 0)
             {
@@ -183,7 +189,7 @@ public class ColorPicker : MonoBehaviour
             else
             {
                 gameManager.ObjectPainter.CurrentColor = ColorLibrary.RGBColor(
-                    ColorLibrary.filteredColors[filteredCurrentColor]);
+                    ColorLibrary.filteredColors[gameManager.CurrentColorGoal]);
                 gameManager.AdvanceActionMode();
                 playCancelSound = false;
                 break;

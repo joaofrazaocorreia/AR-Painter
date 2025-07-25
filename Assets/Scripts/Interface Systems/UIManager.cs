@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -200,12 +201,14 @@ public class UIManager : MonoBehaviour
     }
 
     public void UpdateColorPickingDebug(Color currentColor, Color averageColor,
-        FilteredColors filteredCurrentColor)
+        List<FilteredColors> filteredCurrentColors)
     {
         // Displays the color on the debug UI
         currentColorImage.color = currentColor;
         currentColorText.text = $"({averageColor.r}, {averageColor.g}, {averageColor.b})";
-        filteredColorText.text = filteredCurrentColor.ToString();
+        filteredColorText.text = "";
+        foreach (FilteredColors fc in filteredCurrentColors)
+            filteredColorText.text += fc.ToString() + "\n";
     }
 
     public void UpdateColorGoalUI(FilteredColors currentColorGoal, bool colorMatch)
