@@ -449,7 +449,7 @@ MonoBehaviour:
   muteMusic: 0
   startingVolume: 1
   buttonPressSound: {fileID: 8300000, guid: 27eaf6faf2990174bb4b7999cee994ea, type: 3}
-  tapActionSound: {fileID: 8300000, guid: 27eaf6faf2990174bb4b7999cee994ea, type: 3}
+  tapActionSound: {fileID: 8300000, guid: 458584e9f8a673e43905ae172d6c354f, type: 3}
   holdActionSound: {fileID: 8300000, guid: ff9938e14f254794ea67823bfac2e3ce, type: 3}
   holdActionCancelSound: {fileID: 8300000, guid: 98b2a74e371e81f479a9bfd857ac0b58,
     type: 3}
