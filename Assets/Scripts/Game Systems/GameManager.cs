@@ -189,6 +189,7 @@ public class GameManager : MonoBehaviour
             case PlayerActionMode.ColorPicking:
                 {
                     playerActionMode = PlayerActionMode.ObjectPainting;
+                    uiManager.UpdateColorCycleTimer(false);
                     uiManager.UpdateTutorialText(4);
                     AudioManager.PlaySucessSFX();
                     break;

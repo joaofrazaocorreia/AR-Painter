@@ -152,6 +152,11 @@ public class UIManager : MonoBehaviour
             timerText.text = $"{minutes}:";
             if (seconds < 10) timerText.text += "0";
             timerText.text += $"{seconds}";
+
+            if (minutes <= 0 && seconds <= 10)
+            {
+                timerText.color = Color.red;
+            }
         }
     }
 
