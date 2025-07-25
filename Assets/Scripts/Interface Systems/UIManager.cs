@@ -28,12 +28,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject colorCollectingBar;
     [SerializeField] private Image colorCollectingFill;
     [SerializeField] private TextMeshProUGUI currentColorText;
-    [SerializeField] private TextMeshProUGUI filteredColorText;
-    [SerializeField] private Image currentColorImage;
     [SerializeField] private TextMeshProUGUI currentColorGoalText;
     [SerializeField] private Image currentColorGoalImage;
     [SerializeField] private Image correctColorImage;
     [SerializeField] private GameObject holdToCollectUI;
+    [SerializeField] private TextMeshProUGUI currentColorDebugText;
+    [SerializeField] private TextMeshProUGUI filteredColorDebugText;
+    [SerializeField] private Image currentColorDebugImage;
 
     [Header("Object Painter HUD Elements")]
     [SerializeField] private GameObject pressToPaintUI;
@@ -62,13 +63,13 @@ public class UIManager : MonoBehaviour
         winScreen.SetActive(false);
         loseScreen.SetActive(false);
 
-        StartCoroutine(UnfadeScreen(loadingScreen));
+        StartCoroutine(UnfadeScreen(loadingScreen, delay:1.5f));
     }
 
 
     public void LoadScene(int index)
     {
-        StartCoroutine(LoadSceneCoroutine(index, loadingScreen));
+        StartCoroutine(LoadSceneCoroutine(index, loadingScreen, 3f));
     }
 
     public static IEnumerator LoadSceneCoroutine(int index, CanvasGroup loadingScreen, float speed = 1)
@@ -86,10 +87,12 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene(index);
     }
 
-    public static IEnumerator UnfadeScreen(CanvasGroup loadingScreen, float speed = 1)
+    public static IEnumerator UnfadeScreen(CanvasGroup loadingScreen, float speed = 1, float delay = 0f)
     {
         loadingScreen.alpha = 1f;
         loadingScreen.gameObject.SetActive(true);
+
+        if(delay > 0) yield return new WaitForSeconds(delay);
 
         while (loadingScreen.alpha > 0)
         {
@@ -176,6 +179,7 @@ public class UIManager : MonoBehaviour
 
     public void ToggleColorPickingUI(bool toggle)
     {
+        currentColorText.gameObject.SetActive(toggle);
         currentColorGoalText.gameObject.SetActive(toggle);
         currentColorGoalImage.gameObject.SetActive(toggle);
         ToggleCrosshairs(!toggle);
@@ -183,9 +187,9 @@ public class UIManager : MonoBehaviour
 
     public void ToggleColorPickingDebug(bool toggle)
     {
-        currentColorText.gameObject.SetActive(toggle);
-        filteredColorText.gameObject.SetActive(toggle);
-        currentColorImage.gameObject.SetActive(toggle);
+        currentColorDebugText.gameObject.SetActive(toggle);
+        filteredColorDebugText.gameObject.SetActive(toggle);
+        currentColorDebugImage.gameObject.SetActive(toggle);
     }
 
     public void ToggleCrosshairs(bool useDefault)
@@ -204,29 +208,33 @@ public class UIManager : MonoBehaviour
         List<FilteredColors> filteredCurrentColors)
     {
         // Displays the color on the debug UI
-        currentColorImage.color = currentColor;
-        currentColorText.text = $"({averageColor.r}, {averageColor.g}, {averageColor.b})";
-        filteredColorText.text = "";
+        currentColorDebugImage.color = currentColor;
+        currentColorDebugText.text = $"({averageColor.r}, {averageColor.g}, {averageColor.b})";
+        filteredColorDebugText.text = "";
         foreach (FilteredColors fc in filteredCurrentColors)
-            filteredColorText.text += fc.ToString() + "\n";
+            filteredColorDebugText.text += fc.ToString() + "\n";
     }
 
-    public void UpdateColorGoalUI(FilteredColors currentColorGoal, bool colorMatch)
+    public void UpdateColorGoalUI(FilteredColors currentColorGoal, List<FilteredColors> filteredCurrentColors)
     {
         currentColorGoalText.text = $"Looking for: {currentColorGoal}";
         currentColorGoalImage.color = ColorLibrary.BinaryColor(ColorLibrary.filteredColors[currentColorGoal]);
 
-        if (colorMatch)
+
+        if (filteredCurrentColors.Contains(currentColorGoal))
         {
+            currentColorText.text = currentColorGoal.ToString();
             correctColorImage.color = Color.green;
             holdToCollectUI.SetActive(true);
         }
         else
         {
+            currentColorText.text = filteredCurrentColors[0].ToString();
             correctColorImage.color = Color.red;
             holdToCollectUI.SetActive(false);
         }
     }
+
     public void ToggleCollectingPrompt(bool toggle)
     {
         holdToCollectUI.SetActive(toggle);

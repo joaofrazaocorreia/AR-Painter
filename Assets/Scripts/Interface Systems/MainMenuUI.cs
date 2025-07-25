@@ -16,7 +16,7 @@ public class MainMenuUI : MonoBehaviour
         incrementingColorMode = 1;
 
         fadeOutScreen.gameObject.SetActive(true);
-        StartCoroutine(UIManager.UnfadeScreen(fadeOutScreen, 0.5f));
+        StartCoroutine(UIManager.UnfadeScreen(fadeOutScreen));
     }
 
     private void Update()
@@ -27,7 +27,7 @@ public class MainMenuUI : MonoBehaviour
 
     public void LoadScene(int index)
     {
-        StartCoroutine(UIManager.LoadSceneCoroutine(index, loadingScreen));
+        StartCoroutine(UIManager.LoadSceneCoroutine(index, loadingScreen, 3f));
     }
 
     private void RotateBG(float speed = 1f)

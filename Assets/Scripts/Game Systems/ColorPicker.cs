@@ -115,7 +115,7 @@ public class ColorPicker : MonoBehaviour
         // Updates the color picking UI
         gameManager.UIManager.ToggleColorPickingUI(true);
         gameManager.UIManager.UpdateColorGoalUI(gameManager.CurrentColorGoal,
-            filteredCurrentColors.Contains(gameManager.CurrentColorGoal));
+            filteredCurrentColors);
 
         // Updates the debug UI
         gameManager.UIManager.ToggleColorPickingDebug(debug);

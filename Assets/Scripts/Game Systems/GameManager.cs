@@ -182,7 +182,7 @@ public class GameManager : MonoBehaviour
                     playerActionMode = PlayerActionMode.ColorPicking;
                     uiManager.UpdateTutorialText(3);
                     AudioManager.PlaySucessSFX();
-                    AudioManager.SetMusicVolume(1f);
+                    AudioManager.SetMusicVolume(0.85f);
                     break;
                 }
 
