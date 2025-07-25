@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Paintable Spawner HUD Elements")]
     [SerializeField] private GameObject tapToSpawnUI;
+    [SerializeField] private TextMeshProUGUI countdownText;
 
     [Header("Color Picker HUD Elements")]
     [SerializeField] private GameObject colorCollectingBar;
@@ -127,6 +128,14 @@ public class UIManager : MonoBehaviour
 
         else
             UpdateTutorialText(0);
+    }
+
+
+    public void UpdateCountdownText(float timer)
+    {
+        countdownText.gameObject.SetActive(timer > 0);
+
+        countdownText.text = Mathf.Ceil(timer).ToString();
     }
 
 

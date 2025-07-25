@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
@@ -18,6 +19,7 @@ public class PaintableSpawner : MonoBehaviour
     private List<ARRaycastHit> hits;
     private Vector2 middleScreenPosition;
     private ParticleSystem raycastHitCursor;
+    private bool coutdownActive;
 
     private void Start()
     {
@@ -31,7 +33,7 @@ public class PaintableSpawner : MonoBehaviour
 
     private void Update()
     {
-        if (EnabledSpawning)
+        if (EnabledSpawning && !coutdownActive)
         {
             if (!raycastHitCursor.isPlaying)
             {
@@ -40,7 +42,7 @@ public class PaintableSpawner : MonoBehaviour
 
             middleScreenPosition = Camera.main.ViewportToScreenPoint(new Vector2(0.5f, 0.5f));
             bool hitARPlane = raycastManager.Raycast(middleScreenPosition, hits, TrackableType.PlaneWithinPolygon);
-            
+
             if (hitARPlane)
             {
                 raycastHitCursor.transform.position = hits[0].pose.position;
@@ -82,8 +84,35 @@ public class PaintableSpawner : MonoBehaviour
 
                 gameManager.AudioManager.PlayTapActionSFX();
 
-                gameManager.AdvanceActionMode();
+                StartCoroutine(CountdownToStart());
             }
         }
+    }
+
+    private IEnumerator CountdownToStart()
+    {
+        float timer = 3f;
+        float tickTimer = 0f;
+
+        coutdownActive = true;
+        gameManager.UIManager.UpdateTutorialText(0);
+
+        while (timer > 0)
+        {
+            timer -= Time.deltaTime;
+            gameManager.UIManager.UpdateCountdownText(timer);
+
+            tickTimer -= Time.deltaTime;
+            if (tickTimer <= 0)
+            {
+                tickTimer = 1f;
+                gameManager.AudioManager.PlayGameTimerTickSFX();
+            }
+
+            yield return null;
+        }
+
+        gameManager.AudioManager.PlayGameTimerTickSFX(true);
+        gameManager.AdvanceActionMode();
     }
 }

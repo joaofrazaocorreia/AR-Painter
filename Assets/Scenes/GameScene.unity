@@ -1991,6 +1991,7 @@ MonoBehaviour:
   tutorialBackgroundUI: {fileID: 767725669}
   permaToggleTutorialUI: 0
   tapToSpawnUI: {fileID: 1346630298}
+  countdownText: {fileID: 1587406109}
   colorCollectingBar: {fileID: 1288468160}
   colorCollectingFill: {fileID: 1291957896}
   currentColorText: {fileID: 2004165839}
@@ -4123,7 +4124,7 @@ GameObject:
   - component: {fileID: 1587406110}
   - component: {fileID: 1587406109}
   m_Layer: 5
-  m_Name: errorText
+  m_Name: countdownText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4145,8 +4146,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -452}
-  m_SizeDelta: {x: 600, y: 600}
+  m_AnchoredPosition: {x: 0, y: 500}
+  m_SizeDelta: {x: 500, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1587406109
 MonoBehaviour:
@@ -4168,10 +4169,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: 3
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 44f921b782f2152419f9f0d57ab28a89, type: 2}
+  m_sharedMaterial: {fileID: 5491048949730030255, guid: 44f921b782f2152419f9f0d57ab28a89,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4195,8 +4197,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 350
+  m_fontSizeBase: 350
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4710,6 +4712,7 @@ RectTransform:
   - {fileID: 1484108373}
   - {fileID: 118473571}
   - {fileID: 794352830}
+  - {fileID: 1587406108}
   - {fileID: 1288468161}
   - {fileID: 2004165838}
   - {fileID: 555415449}
@@ -4726,7 +4729,6 @@ RectTransform:
   - {fileID: 1751945385}
   - {fileID: 1571465633}
   - {fileID: 1081526729}
-  - {fileID: 1587406108}
   - {fileID: 1026432730}
   m_Father: {fileID: 857003192}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

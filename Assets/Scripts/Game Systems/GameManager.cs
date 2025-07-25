@@ -119,6 +119,7 @@ public class GameManager : MonoBehaviour
                 if (indexCycleTimer < 0)
                 {
                     CycleColorIndex();
+                    AudioManager.PlayColorTimerTickSFX(true);
                 }
 
                 else
@@ -132,7 +133,7 @@ public class GameManager : MonoBehaviour
                         colorTimerTickTimer -= Time.deltaTime;
                         if (colorTimerTickTimer <= 0)
                         {
-                            AudioManager.PlayColorTimerTickSFX(indexCycleTimer < 1);
+                            AudioManager.PlayColorTimerTickSFX();
                             colorTimerTickTimer = 1f;
                         }
                     }
