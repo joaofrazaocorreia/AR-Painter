@@ -20,6 +20,7 @@ public class PaintableSpawner : MonoBehaviour
     private Vector2 middleScreenPosition;
     private ParticleSystem raycastHitCursor;
     private bool coutdownActive;
+    private bool spawned;
 
     private void Start()
     {
@@ -30,6 +31,7 @@ public class PaintableSpawner : MonoBehaviour
         hits = new List<ARRaycastHit>();
         raycastHitCursor = Instantiate(raycastCursorPrefab).GetComponentInChildren<ParticleSystem>();
         Random.InitState((int)Time.time);
+        spawned = false;
     }
 
     private void Update()
@@ -67,7 +69,7 @@ public class PaintableSpawner : MonoBehaviour
     public void SpawnObject()
     {
         if (EnabledSpawning && raycastManager.Raycast(middleScreenPosition, hits,
-            TrackableType.PlaneWithinPolygon))
+            TrackableType.PlaneWithinPolygon) && !spawned)
         {
             if (planeManager.GetPlane(hits[0].trackableId).alignment == PlaneAlignment.HorizontalUp)
             {
@@ -82,6 +84,8 @@ public class PaintableSpawner : MonoBehaviour
 
                 gameManager.CurrentPaintable = Instantiate(chosenPaintable, hits[0].pose.position,
                     faceCameraRotation).GetComponent<PaintableObject>();
+                    
+                spawned = true;
 
                 gameManager.AudioManager.PlayTapActionSFX();
 
