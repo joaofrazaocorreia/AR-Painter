@@ -29,6 +29,7 @@ public class PaintableSpawner : MonoBehaviour
 
         hits = new List<ARRaycastHit>();
         raycastHitCursor = Instantiate(raycastCursorPrefab).GetComponentInChildren<ParticleSystem>();
+        Random.InitState((int)Time.time);
     }
 
     private void Update()

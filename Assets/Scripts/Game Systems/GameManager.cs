@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour
         currentColorIndex = 0;
         incompleteGoalIndexes = new List<int>();
         indexCycleTimer = timePerColor;
+        Random.InitState((int)Time.time);
 
         numOfColors = Mathf.Clamp(numOfColors, 1, ColorLibrary.filteredColors.Count() - 1);
 
@@ -116,25 +117,27 @@ public class GameManager : MonoBehaviour
 
             if (playerActionMode == PlayerActionMode.ColorPicking)
             {
-                if (indexCycleTimer < 0)
+                if (incompleteGoalIndexes.Count > 1)
                 {
-                    CycleColorIndex();
-                    AudioManager.PlayColorTimerTickSFX(true);
-                }
-
-                else
-                {
-                    indexCycleTimer -= Time.deltaTime;
-                    uiManager.UpdateColorCycleTimer(incompleteGoalIndexes.Count > 1
-                        && indexCycleTimer <= 10, indexCycleTimer);
-
-                    if (incompleteGoalIndexes.Count > 1 && indexCycleTimer <= 10)
+                    if (indexCycleTimer < 0)
                     {
-                        colorTimerTickTimer -= Time.deltaTime;
-                        if (colorTimerTickTimer <= 0)
+                        CycleColorIndex();
+                        AudioManager.PlayColorTimerTickSFX(true);
+                    }
+
+                    else
+                    {
+                        indexCycleTimer -= Time.deltaTime;
+                        uiManager.UpdateColorCycleTimer(indexCycleTimer <= 10, indexCycleTimer);
+
+                        if (indexCycleTimer <= 10)
                         {
-                            AudioManager.PlayColorTimerTickSFX();
-                            colorTimerTickTimer = 1f;
+                            colorTimerTickTimer -= Time.deltaTime;
+                            if (colorTimerTickTimer <= 0)
+                            {
+                                AudioManager.PlayColorTimerTickSFX();
+                                colorTimerTickTimer = 1f;
+                            }
                         }
                     }
                 }

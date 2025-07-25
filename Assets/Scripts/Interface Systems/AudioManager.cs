@@ -34,6 +34,7 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
+        Random.InitState((int)Time.time);
         musicIndex = Random.Range(0, musicPlaylist.Count);
         musicAudioSource.volume = startingVolume;
     }
