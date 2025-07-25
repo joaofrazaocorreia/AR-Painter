@@ -17,19 +17,23 @@ public class PaintableObject : MonoBehaviour
         colorableParts = new List<List<GameObject>>();
 
         int assignmentLoops = (int)Mathf.Ceil(transform.childCount / gameManager.NumOfColors);
-        int childIndex = 0;
 
         for (int i = 0; i < assignmentLoops; i++)
         {
-            for (int j = 0; j < gameManager.NumOfColors && childIndex < transform.childCount; j++)
+            for (int j = 0; j < gameManager.NumOfColors && j < transform.childCount; j++)
             {
                 while (colorableParts.Count <= j)
                     colorableParts.Add(new List<GameObject>());
 
-                Transform partToAdd = transform.GetChild(childIndex++);
+                Transform partsParent = transform.GetChild(j);
 
-                if (partToAdd != null)
-                    colorableParts[j].Add(partToAdd.gameObject);
+                for (int k = 0; k < partsParent.childCount; k++)
+                {
+                    Transform partToAdd = partsParent.GetChild(k);
+
+                    if (partToAdd != null)
+                        colorableParts[j].Add(partToAdd.gameObject);
+                }
             }
         }
     }
